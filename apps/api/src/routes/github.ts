@@ -151,7 +151,19 @@ githubRoutes.get('/authorize', async c => {
   }
 
   const code = c.req.query('code')
-  if (code) {
+  const setupAction = c.req.query('setup_action')
+  const isInstallationReturn =
+    c.req.query('state') === undefined &&
+    (setupAction === 'install' || setupAction === 'update') &&
+    /^[1-9]\d*$/.test(c.req.query('installation_id') ?? '')
+
+  // GitHub's authorization-during-installation return can omit OAuth state.
+  // Neither its code nor installation_id can establish identity or repo access.
+  if (isInstallationReturn) {
+    const sid = getCookie(c, auth.SID_COOKIE)
+    if (sid && touchSession(sid)) return c.redirect(auth.createOauthReturnUrl())
+  }
+  if (code && !isInstallationReturn) {
     try {
       const state = c.req.query('state')
       const cookieState = getCookie(c, auth.OAUTH_STATE_COOKIE)
