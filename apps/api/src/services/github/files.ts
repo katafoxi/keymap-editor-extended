@@ -5,6 +5,7 @@ import {
   HOST_KEYMAP_SNAPSHOT_PATH,
   isPrimaryKeymapJson,
   isUserKeymapFilename,
+  matchingInfoJsonFilename,
   parseDtsKeymap,
   parseHostKeymapSnapshot,
   type HostKeymapDeliverableFile,
@@ -311,9 +312,15 @@ async function fetchHostKeymapSnapshot(
   }
 }
 
+function matchingInfoPath(keymap: ConfigDirEntry): string | null {
+  const filename = matchingInfoJsonFilename(keymap.name)
+  return filename ? path.posix.join(path.posix.dirname(keymap.path), filename) : null
+}
+
 async function fetchInfoJson(
   installationToken: string,
   repository: string,
+  originalCodeKeymap: ConfigDirEntry,
   ref?: string
 ): Promise<unknown | null> {
   try {
@@ -321,6 +328,21 @@ async function fetchInfoJson(
       installationToken,
       repository,
       'config/info.json',
+      { raw: true, ref }
+    )
+    return parseJsonBody(infoRaw)
+  } catch (err) {
+    if (!(err instanceof MissingRepoFile)) throw err
+  }
+
+  const fallbackPath = matchingInfoPath(originalCodeKeymap)
+  if (!fallbackPath) return null
+
+  try {
+    const { data: infoRaw } = await fetchFile(
+      installationToken,
+      repository,
+      fallbackPath,
       { raw: true, ref }
     )
     return parseJsonBody(infoRaw)
@@ -339,18 +361,15 @@ export async function fetchKeyboardFiles(
   const installationToken = (data as { token: string }).token
   const head = await resolveHeadCommit(installationToken, repository, branch)
   const ref = head.sha
-  const [info, listing, hostSnapshot] = await Promise.all([
-    fetchInfoJson(installationToken, repository, ref),
+  const [listing, hostSnapshot] = await Promise.all([
     listConfigDir(installationToken, repository, ref),
     fetchHostKeymapSnapshot(installationToken, repository, ref)
   ])
   const originalCodeKeymap = findCodeKeymap(listing)
-  const keymap = await fetchKeymap(
-    installationToken,
-    repository,
-    originalCodeKeymap,
-    ref
-  )
+  const [info, keymap] = await Promise.all([
+    fetchInfoJson(installationToken, repository, originalCodeKeymap, ref),
+    fetchKeymap(installationToken, repository, originalCodeKeymap, ref)
+  ])
   return { info, keymap, hostSnapshot, headSha: head.sha }
 }
 

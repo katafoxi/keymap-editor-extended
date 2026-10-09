@@ -716,6 +716,17 @@ export function isUserKeymapFilename(name: string): boolean {
   return lower.endsWith('.keymap') && !lower.endsWith('.keymap.template')
 }
 
+/**
+ * Sibling physical-layout filename for a user keymap, or null when it would
+ * collide with the reserved config/info.json or config/keymap.json contracts.
+ */
+export function matchingInfoJsonFilename(keymapFilename: string): string | null {
+  if (!isUserKeymapFilename(keymapFilename)) return null
+  const stem = keymapFilename.slice(0, -'.keymap'.length)
+  if (stem.toLowerCase() === 'info' || stem.toLowerCase() === 'keymap') return null
+  return `${stem}.json`
+}
+
 function cloneBehaviorDef(def: BehaviorDef): BehaviorDef {
   return {
     ...def,

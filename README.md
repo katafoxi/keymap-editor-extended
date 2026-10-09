@@ -27,7 +27,7 @@ First visit opens **Demo · Corne**. The [Demo catalog](packages/keymap-core/fix
 
 ### Clipboard — `.keymap` only
 
-Paste a ZMK `.keymap` without `info.json` (Clipboard), or open a GitHub `zmk-config` that lacks `config/info.json`: the app draws a **flat rectangular** board from the binding count so you can still edit. Clipboard **Copy .keymap** / GitHub **Commit** update the keymap; add `info.json` when you want the real geometry.
+Paste a ZMK `.keymap` without `info.json` (Clipboard), or open a GitHub `zmk-config` that lacks a layout file: the app draws a **flat rectangular** board from the binding count so you can still edit. GitHub and Local also accept `config/<keymap-name>.json` when `config/info.json` is absent. Clipboard **Copy .keymap** / GitHub **Commit** update the keymap; add a layout file when you want the real geometry.
 
 ![Clipboard mode with inferred rectangular layout](docs/screenshots/clipboard-inferred.png)
 
@@ -55,7 +55,7 @@ Legend strip: show/hide languages and pick system or user profiles. **Stack** an
 |--------|------|
 | **Demo** | Bundled fixtures for first visit (default Corne). No firmware write. Short coach tour; optional second host language from the browser locale. |
 | **Clipboard** | Paste `.keymap` (`info.json` optional). **Copy .keymap** → system clipboard + preview dialog. |
-| **GitHub** | Load/commit `zmk-config` via GitHub App + OAuth. `info.json` optional (flat rectangular board otherwise). Host layouts share the commit as `host_keymap/snapshot.json` (+ Linux/Windows install files). **Latest** firmware artifact chip when available. |
+| **GitHub** | Load/commit `zmk-config` via GitHub App + OAuth. `config/info.json` is optional; a matching `config/<keymap-name>.json` is also accepted (flat rectangular board otherwise). Host layouts share the commit as `host_keymap/snapshot.json` (+ Linux/Windows install files). **Latest** firmware artifact chip when available. |
 | **Local** | Dev adapter to a sibling `zmk-config` (junction). Not the long-term product path. |
 
 Product persistence is **GitHub-first**; Local is for iterating against a cloned firmware tree; Clipboard is browser-only paste/export. Save/load rules: [ADR 0001](docs/adr/0001-persistence-github-first.md), [ADR 0002](docs/adr/0002-keymap-file-contract.md), host snapshot [ADR 0005](docs/adr/0005-host-keymap-github-snapshot.md).

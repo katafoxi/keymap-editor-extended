@@ -6,6 +6,7 @@ import {
   isUserKeymapFilename,
   KeymapValidationError,
   loadBehaviorsData,
+  matchingInfoJsonFilename,
   normalizeParsedKeymap,
   parseKeyBinding,
   parseKeymap
@@ -180,6 +181,25 @@ describe('isUserKeymapFilename', () => {
   it('rejects templates and other files', () => {
     expect(isUserKeymapFilename('lark.keymap.template')).toBe(false)
     expect(isUserKeymapFilename('readme.md')).toBe(false)
+  })
+})
+
+describe('matchingInfoJsonFilename', () => {
+  it('maps a user keymap filename to its sibling layout filename', () => {
+    expect(matchingInfoJsonFilename('corne_choc_pro.keymap')).toBe('corne_choc_pro.json')
+    expect(matchingInfoJsonFilename('LARK.KEYMAP')).toBe('LARK.json')
+  })
+
+  it('does not collide with reserved info or keymap JSON files', () => {
+    expect(matchingInfoJsonFilename('info.keymap')).toBeNull()
+    expect(matchingInfoJsonFilename('INFO.KEYMAP')).toBeNull()
+    expect(matchingInfoJsonFilename('keymap.keymap')).toBeNull()
+    expect(matchingInfoJsonFilename('KEYMAP.KEYMAP')).toBeNull()
+  })
+
+  it('rejects templates and non-keymap names', () => {
+    expect(matchingInfoJsonFilename('lark.keymap.template')).toBeNull()
+    expect(matchingInfoJsonFilename('readme.md')).toBeNull()
   })
 })
 
