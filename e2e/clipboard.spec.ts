@@ -133,6 +133,36 @@ test.describe('Clipboard source', () => {
       .toBe(bindingCount)
   })
 
+  test('Apply preserves an external Unicode binding when another key is edited', async ({ page }) => {
+    const source = `#include <behaviors.dtsi>
+#include <behaviors/unicode.dtsi>
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+    default_layer { bindings = <&uc UC_DE_AE &kp A>; };
+  };
+};`
+    const picker = await openClipboardPicker(page)
+    await picker.getByRole('textbox', { name: /Paste your board \.keymap/ }).fill(source)
+    await picker.getByRole('button', { name: 'Load' }).click()
+
+    const unicode = page.getByRole('button', { name: '&uc UC_DE_AE, layer 0', exact: true })
+    await expect(unicode).toBeVisible()
+    await unicode.click()
+    const dialog = page.getByRole('dialog', { name: 'Edit key' })
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Apply' }).click()
+    await expect(dialog).toBeHidden()
+    await expect(unicode).toBeVisible()
+
+    await editKey(page, page.getByRole('button', { name: '&kp A, layer 0', exact: true }), NEW_KEYCODE)
+    await page.getByRole('button', { name: 'Copy .keymap' }).click()
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain(EDITED_BIND)
+    const copied = await page.evaluate(() => navigator.clipboard.readText())
+    expect(copied).toContain('&uc UC_DE_AE')
+    expect(preambleBeforeKeymapBlock(copied)).toBe(preambleBeforeKeymapBlock(source))
+  })
+
   test('garbage keymap shows an error and leaves the board unchanged', async ({
     page
   }) => {

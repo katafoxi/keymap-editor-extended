@@ -9,7 +9,8 @@ import {
   KeymapValidationError,
   buildHostKeymapSnapshot,
   parseHostKeymapSnapshot,
-  parseKeymap
+  parseKeymap,
+  parseDtsKeymap
 } from '@keymap-editor/keymap-core'
 import type { HostLegendView } from '@keymap-editor/keymap-core'
 import { config } from '../config.js'
@@ -878,6 +879,25 @@ describe('session and errors', () => {
       name: 'KeymapValidationError',
       errors: ['layer 0 is invalid']
     })
+  })
+
+  it('GET /github/keyboard-files preserves external behavior bindings from source', async () => {
+    const keymap = parseDtsKeymap(`#include <behaviors/unicode.dtsi>
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+    default_layer { bindings = <&uc UC_DE_AE>; };
+  };
+};`)
+    vi.mocked(files.fetchKeyboardFiles).mockResolvedValue({
+      info: VALID_INFO,
+      keymap,
+      hostSnapshot: null,
+      headSha: 'abc123'
+    })
+    const { res } = await authedRequest('/github/keyboard-files/1/acme%2Flark')
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchObject({ keymap: parseKeymap(keymap) })
   })
 
   it('GET /github/keyboard-files returns parsed keymap on success', async () => {

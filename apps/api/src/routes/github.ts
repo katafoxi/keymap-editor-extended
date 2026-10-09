@@ -362,7 +362,9 @@ githubRoutes.get('/keyboard-files/:installationId/:repository', async c => {
       branch
     )
     if (info != null) validateInfoJson(info)
-    validateKeymapJson(keymap)
+    // JSON caches are catalog-validated by fetchKeyboardFiles; its .keymap
+    // fallback may reference external behaviors the editor cannot describe.
+    validateKeymapJson(keymap, { allowUnknownBehaviors: true })
     return c.json({
       info: info ?? null,
       keymap: parseKeymap(keymap as { layers: string[][] }),

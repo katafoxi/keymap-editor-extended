@@ -49,7 +49,9 @@ export function getBehaviourParams(
   parsedParams: Array<{ value?: string | number }>,
   behaviour: { params?: unknown[]; commands?: Array<{ code: string; additionalParams?: unknown[] }> } | undefined
 ): unknown[] {
-  if (!behaviour) return []
+  // Unknown external behaviors have no schema; retain their existing arguments
+  // as raw values instead of treating them as parameterless bindings.
+  if (!behaviour) return parsedParams.map(() => 'raw')
   const firstParsedParam = parsedParams?.[0] ?? {}
   const commands = Object.fromEntries((behaviour.commands ?? []).map(c => [c.code, c]))
   const firstValue = (firstParsedParam as { value?: string }).value

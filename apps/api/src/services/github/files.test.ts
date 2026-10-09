@@ -1,4 +1,4 @@
-import { parseKeymap, HOST_KEYMAP_SNAPSHOT_PATH } from '@keymap-editor/keymap-core'
+import { parseKeymap, validateKeymapJson, HOST_KEYMAP_SNAPSHOT_PATH } from '@keymap-editor/keymap-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiRequestOptions } from './api.js'
 import * as api from './api.js'
@@ -365,6 +365,44 @@ describe('fetchKeyboardFiles', () => {
     expect(
       requestUrls(request).filter(url => url.endsWith(`/${KEYMAP_PATH}`))
     ).toHaveLength(1)
+  })
+
+  it('preserves an external binding through load, commit payload, and reload', async () => {
+    const source = `#include <behaviors/unicode.dtsi>\n${DTS.replace('&kp A', '&uc UC_DE_AE &kp A')}`
+    const request = mockGithub(
+      {
+        ...gitCommitEndpoints('main'),
+        'config/info.json': JSON.stringify(INFO),
+        config: LISTING_NO_TEMPLATE,
+        [KEYMAP_PATH]: source
+      },
+      { missing: ['config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+    const loaded = await fetchKeyboardFiles('1', REPO, 'main')
+    validateKeymapJson(loaded.keymap, { allowUnknownBehaviors: true })
+    const edited = parseKeymap(loaded.keymap as { layers: string[][] })
+    edited.layers[0][1] = parseKeymap({ layers: [['&kp B']] }).layers[0][0]
+    await commitChanges('1', REPO, 'main', [
+      { x: 0, y: 0, row: 0, col: 0 },
+      { x: 1, y: 0, row: 0, col: 1 }
+    ], edited, null, null, loaded.headSha)
+
+    const blobs = treeBlobs(request).tree!
+    const savedSource = blobs.find(blob => blob.path === KEYMAP_PATH)!.content
+    const savedJson = blobs.find(blob => blob.path === 'config/keymap.json')!.content
+    expect(savedSource).toContain('#include <behaviors/unicode.dtsi>')
+    expect(savedSource).toContain('&uc UC_DE_AE')
+    expect(JSON.parse(savedJson).layers[0]).toEqual(['&uc UC_DE_AE', '&kp B'])
+
+    mockGithub({
+      'config/info.json': JSON.stringify(INFO),
+      config: LISTING_NO_TEMPLATE,
+      [KEYMAP_PATH]: savedSource,
+      'config/keymap.json': savedJson
+    }, { missing: [HOST_KEYMAP_SNAPSHOT_PATH] })
+    const reloaded = await fetchKeyboardFiles('1', REPO, 'main')
+    validateKeymapJson(reloaded.keymap, { allowUnknownBehaviors: true })
+    expect(reloaded.keymap).toMatchObject({ layers: [['&uc UC_DE_AE', '&kp B']] })
   })
 
   it('falls back to .keymap when keymap.json is not JSON', async () => {

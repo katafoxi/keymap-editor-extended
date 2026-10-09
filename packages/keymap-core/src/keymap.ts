@@ -643,7 +643,14 @@ function applyHoldTaps(
   return spliceHoldTapsIntoDts(code, keymap.holdTaps)
 }
 
-export function validateKeymapJson(keymap: unknown): void {
+/**
+ * Validate JSON against the catalog by default. Source imports may preserve
+ * external behavior references; this does not discover their schema or includes.
+ */
+export function validateKeymapJson(
+  keymap: unknown,
+  options: { allowUnknownBehaviors?: boolean } = {}
+): void {
   const errors: string[] = []
 
   if (typeof keymap !== 'object' || keymap === null) {
@@ -676,8 +683,14 @@ export function validateKeymapJson(keymap: unknown): void {
             if (typeof key !== 'string') {
               errors.push(`Value at "${keyPath}" must be a string`)
             } else {
-              const bind = key.match(/^&.+?\b/)
-              if (!(bind && (bind[0] in behavioursByBind || extraBehaviours.has(bind[0])))) {
+              const bind = key.match(/^&[a-zA-Z_][a-zA-Z0-9_]*(?=\s|$)/)
+              if (!(
+                bind && (
+                  options.allowUnknownBehaviors === true ||
+                  Object.hasOwn(behavioursByBind, bind[0]) ||
+                  extraBehaviours.has(bind[0])
+                )
+              )) {
                 errors.push(`Key bind at "${keyPath}" has invalid behaviour`)
               }
             }
