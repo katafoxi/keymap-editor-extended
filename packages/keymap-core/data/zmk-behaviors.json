@@ -176,6 +176,13 @@
     "params": []
   },
   {
+    "code": "&uc",
+    "name": "Unicode input",
+    "params": ["raw", "raw"],
+    "includes": ["#include <behaviors/unicode.dtsi>"],
+    "description": "Unicode input via urob/zmk-unicode; requires firmware module and host input setup"
+  },
+  {
     "code": "&bootloader",
     "name": "Bootloader",
     "params": []

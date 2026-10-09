@@ -14,7 +14,8 @@ import { withKeyEditSession, type KeyEditSession } from './with-key-edit-session
 
 const catalog = getBehaviorCatalog()
 const behaviorsWithParams = catalog.list.filter(
-  behavior => (behavior.params?.length ?? 0) > 0
+  // Unicode uses its dedicated scalar/alias picker, not first catalog choices.
+  behavior => behavior.code !== '&uc' && (behavior.params?.length ?? 0) > 0
 )
 
 const autoshift = HOLD_TAP_PRESETS.find(preset => preset.code === '&as')
@@ -122,6 +123,24 @@ describe('createKeyEditSession catalog', () => {
 })
 
 describe('createKeyEditSession extra cases', () => {
+  it('assigns a complete Unicode binding from its dedicated picker', () => {
+    const onUpdate = vi.fn()
+    const binding = parseKeyBinding('&uc 0xE4 0xC4')
+    runSession(onUpdate, [{ value: '&none', params: [] }], session => {
+      session.selectBehaviour({ code: '&uc', unicodeBinding: binding })
+      session.confirm()
+    })
+    expect(onUpdate.mock.calls[0][2]).toEqual(binding)
+  })
+
+  it.each(['&uc UC_DE_AE', '&uc UC_SET_LINUX', '&uc UC_EXTERNAL_NAME'])(
+    'preserves existing Unicode macro %s on no-op Apply', code => {
+      const onUpdate = vi.fn()
+      runSession(onUpdate, [parseKeyBinding(code)], session => session.confirm())
+      expect(encodeKeyBinding(onUpdate.mock.calls[0][2])).toBe(code)
+    }
+  )
+
   it('builds &as A as autoshift LS(A) A', () => {
     const onUpdate = vi.fn()
     runSession(onUpdate, [{ value: '&none', params: [] }], session => {

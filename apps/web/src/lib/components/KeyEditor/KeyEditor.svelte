@@ -25,6 +25,8 @@
     initialTaxonomyContexts,
     nextTaxonomyContexts,
     sortBehaviorsByRole,
+    parseKeyBinding,
+    type KeyBindingNode,
     type CatalogChoice
   } from '@keymap-editor/keymap-core'
   import {
@@ -49,6 +51,7 @@
   import HsbPicker from './HsbPicker.svelte'
   import TaxonomyChips from './TaxonomyChips.svelte'
   import ValueGrid from './ValueGrid.svelte'
+  import UnicodePicker from './UnicodePicker.svelte'
   import SelectChip from '../Common/SelectChip.svelte'
   import './KeyEditor.css'
 
@@ -62,6 +65,7 @@
     /** `&rgblayer` chip: target layer index (session applies in one shot). */
     layer?: number
     hsb?: HsbColor
+    unicodeBinding?: KeyBindingNode
   }
 
   interface Props {
@@ -139,6 +143,8 @@
   /** Recipe node kept local until Apply, like hold-tap presets. */
   let stagedRgbLayerRecipe = $state(false)
   const rgbLayerEdit = $derived(isRgbLayerRecipeCode(behaviourValue))
+  const unicodeEdit = $derived(behaviourValue === '&uc')
+  let unicodeReady = $state(false)
   const layerSlot = $derived(paramSlots.find(slot => slot.param === 'layer'))
   const hsbSlot = $derived(paramSlots.find(slot => slot.param === 'hsb'))
   const hsbValue = $derived(
@@ -361,7 +367,7 @@
     collectActiveHolds(editorSlots, activeKeySlot?.codeIndex ?? activeCodeIndex)
   )
   const needsTerminal = $derived(needsTerminalKey(showHolds, activeHolds, paramSlots))
-  const canConfirm = $derived(canConfirmBinding(editorSlots))
+  const canConfirm = $derived(unicodeEdit ? unicodeReady : canConfirmBinding(editorSlots))
   const pickKeyHint = $derived(
     shouldShowPickKeyHint(catalogSlot, paramSlots, needsTerminal)
   )
@@ -498,8 +504,9 @@
         type="button"
         class="key-editor-ok"
         class:blocked={!canConfirm}
-        aria-label={canConfirm ? 'Apply' : 'Pick a key to finish the combo'}
-        title={canConfirm ? 'Apply (Enter)' : 'Pick a key to finish the combo'}
+        aria-label={canConfirm ? 'Apply' : unicodeEdit ? 'Enter valid Unicode input' : 'Pick a key to finish the combo'}
+        title={canConfirm ? 'Apply (Enter)' : unicodeEdit ? 'Enter valid Unicode input' : 'Pick a key to finish the combo'}
+        disabled={unicodeEdit && !canConfirm}
         onclick={handleApply}
       >
         ✓
@@ -592,6 +599,15 @@
         <p class="key-editor-note">{firmwareNote}</p>
       {/if}
 
+      {#if unicodeEdit}
+        <UnicodePicker
+          value={parseKeyBinding(bindingLabel)}
+          onChange={binding => {
+            unicodeReady = binding != null
+            if (binding) onSelectBehaviour({ code: '&uc', unicodeBinding: binding })
+          }}
+        />
+      {:else}
       {#each inlineSlots as slot (slot.codeIndex)}
         {@const options = catalogKeyChoices(choicesFor(slot.param))}
         {@const labelOf = buildChoiceLabeler(options)}
@@ -744,6 +760,7 @@
         </div>
       {:else if inlineSlots.length === 0}
         <p class="key-editor-empty">This behaviour applies immediately.</p>
+      {/if}
       {/if}
     </div>
   </div>

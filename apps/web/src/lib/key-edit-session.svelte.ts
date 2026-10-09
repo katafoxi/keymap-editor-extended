@@ -216,9 +216,20 @@ export function createKeyEditSession(input: KeyEditSessionInput) {
     params?: unknown[]
     layer?: number
     hsb?: HsbColor
+    unicodeBinding?: KeyBindingNode
   }) {
     const nextValue = choice.code
     if (nextValue == null) return
+    if (nextValue === '&uc' && choice.unicodeBinding?.value === '&uc') {
+      setDraft(choice.unicodeBinding, 1)
+      return
+    }
+    if (nextValue === '&uc') {
+      setDraft({ value: '&uc', params: [
+        { value: '0', params: [] }, { value: '0', params: [] }
+      ] }, 1)
+      return
+    }
     if (isRgbLayerRecipeCode(nextValue)) {
       const layer = Number.isFinite(choice.layer) ? Number(choice.layer) : 1
       setDraft(defaultRgbLayerBinding(layer, choice.hsb), 1)

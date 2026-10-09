@@ -1,0 +1,1757 @@
+{
+  "source": "https://github.com/urob/zmk-unicode/tree/6ce21267e497e20ff9e05da16d4eefcdd3e89190",
+  "aliases": [
+    {
+      "code": "UC_CA_A_GRAVE",
+      "normal": 224,
+      "shift": 192,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_A_ACUTE",
+      "normal": 225,
+      "shift": 193,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_C_CEDILLA",
+      "normal": 231,
+      "shift": 199,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_E_GRAVE",
+      "normal": 232,
+      "shift": 200,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_E_ACUTE",
+      "normal": 233,
+      "shift": 201,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_I_ACUTE",
+      "normal": 237,
+      "shift": 205,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_I_DIAERESIS",
+      "normal": 239,
+      "shift": 207,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_O_GRAVE",
+      "normal": 242,
+      "shift": 210,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_O_ACUTE",
+      "normal": 243,
+      "shift": 211,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_U_GRAVE",
+      "normal": 249,
+      "shift": 217,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_U_ACUTE",
+      "normal": 250,
+      "shift": 218,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CA_U_DIAERESIS",
+      "normal": 252,
+      "shift": 220,
+      "group": "Catalan"
+    },
+    {
+      "code": "UC_CURR_DOLLAR",
+      "normal": 36,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_CENT",
+      "normal": 162,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_POUND",
+      "normal": 163,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_CURRENCY",
+      "normal": 164,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_YEN",
+      "normal": 165,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_ARMENIAN_DRAM",
+      "normal": 1423,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_AFGHANI_DRAM",
+      "normal": 1547,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_NKO_DOROME",
+      "normal": 2046,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_BENGALI_RUPEE1",
+      "normal": 2546,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_BENGALI_RUPEE2",
+      "normal": 2547,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_BENGALI_GANDA",
+      "normal": 2555,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_GUJARATI_RUPEE",
+      "normal": 2801,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_TAMIL_RUPEE",
+      "normal": 3065,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_THAI_BAHT",
+      "normal": 3647,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_KHMER_RIEL",
+      "normal": 6107,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_COLON",
+      "normal": 8353,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_CRUZEIRO",
+      "normal": 8354,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_FRENCH_FRANC",
+      "normal": 8355,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_LIRA",
+      "normal": 8356,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_MILL",
+      "normal": 8357,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_NAIRA",
+      "normal": 8358,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_PESETA",
+      "normal": 8359,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_LEGACY_RUPEE",
+      "normal": 8360,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_WON",
+      "normal": 8361,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_NEW_SHEQEL",
+      "normal": 8362,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_DONG",
+      "normal": 8363,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_EURO",
+      "normal": 8364,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_KIP",
+      "normal": 8365,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_TUGRIK",
+      "normal": 8366,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_DRACHMA",
+      "normal": 8367,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_GERMAN_PENNY",
+      "normal": 8368,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_PESO",
+      "normal": 8369,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_GUARANI",
+      "normal": 8370,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_AUSTRAL",
+      "normal": 8371,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_HRYVNIA",
+      "normal": 8372,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_CEDI",
+      "normal": 8373,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_LIVRE_TOURNOIS",
+      "normal": 8374,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_SPESMILO",
+      "normal": 8375,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_TENGE",
+      "normal": 8376,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_INDIAN_RUPEE",
+      "normal": 8377,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_TURKISH_LIRA",
+      "normal": 8378,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_NORDIC_MARK",
+      "normal": 8379,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_MANAT",
+      "normal": 8380,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_RUBLE",
+      "normal": 8381,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_LARI",
+      "normal": 8382,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_BITCOIN",
+      "normal": 8383,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_SOM",
+      "normal": 8384,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_NORTH_INDIC_RUPEE",
+      "normal": 43064,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_RIAL",
+      "normal": 65020,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CURR_WANCHO_NGUN",
+      "normal": 65020,
+      "shift": 0,
+      "group": "Currency"
+    },
+    {
+      "code": "UC_CS_EC",
+      "normal": 283,
+      "shift": 282,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_SC",
+      "normal": 353,
+      "shift": 352,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_CC",
+      "normal": 269,
+      "shift": 268,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_RC",
+      "normal": 345,
+      "shift": 344,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_ZC",
+      "normal": 382,
+      "shift": 381,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_YA",
+      "normal": 253,
+      "shift": 221,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_AA",
+      "normal": 225,
+      "shift": 193,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_IA",
+      "normal": 237,
+      "shift": 205,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_EA",
+      "normal": 233,
+      "shift": 201,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_OA",
+      "normal": 243,
+      "shift": 211,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_UR",
+      "normal": 367,
+      "shift": 366,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_UA",
+      "normal": 250,
+      "shift": 218,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_NC",
+      "normal": 328,
+      "shift": 327,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_DC",
+      "normal": 271,
+      "shift": 270,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_CS_TC",
+      "normal": 357,
+      "shift": 356,
+      "group": "Czech"
+    },
+    {
+      "code": "UC_DA_AE",
+      "normal": 230,
+      "shift": 198,
+      "group": "Danish"
+    },
+    {
+      "code": "UC_DA_OE",
+      "normal": 248,
+      "shift": 216,
+      "group": "Danish"
+    },
+    {
+      "code": "UC_DA_AA",
+      "normal": 229,
+      "shift": 197,
+      "group": "Danish"
+    },
+    {
+      "code": "UC_FO_ETH",
+      "normal": 240,
+      "shift": 208,
+      "group": "Faroese"
+    },
+    {
+      "code": "UC_FO_AE",
+      "normal": 230,
+      "shift": 198,
+      "group": "Faroese"
+    },
+    {
+      "code": "UC_FO_OE",
+      "normal": 248,
+      "shift": 216,
+      "group": "Faroese"
+    },
+    {
+      "code": "UC_FO_AA",
+      "normal": 229,
+      "shift": 197,
+      "group": "Faroese"
+    },
+    {
+      "code": "UC_FR_AE",
+      "normal": 230,
+      "shift": 198,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_OE",
+      "normal": 339,
+      "shift": 338,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_A_GRAVE",
+      "normal": 224,
+      "shift": 192,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_A_CIRCUMFLEX",
+      "normal": 226,
+      "shift": 194,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_C_CEDILLA",
+      "normal": 231,
+      "shift": 199,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_E_GRAVE",
+      "normal": 232,
+      "shift": 200,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_E_ACUTE",
+      "normal": 233,
+      "shift": 201,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_E_CIRCUMFLEX",
+      "normal": 234,
+      "shift": 202,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_E_DIAERESIS",
+      "normal": 235,
+      "shift": 203,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_I_CIRCUMFLEX",
+      "normal": 238,
+      "shift": 206,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_I_DIAERESIS",
+      "normal": 239,
+      "shift": 207,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_O_CIRCUMFLEX",
+      "normal": 244,
+      "shift": 212,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_U_GRAVE",
+      "normal": 249,
+      "shift": 217,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_U_CIRCUMFLEX",
+      "normal": 251,
+      "shift": 219,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_U_DIAERESIS",
+      "normal": 252,
+      "shift": 220,
+      "group": "French"
+    },
+    {
+      "code": "UC_FR_Y_DIAERESIS",
+      "normal": 255,
+      "shift": 376,
+      "group": "French"
+    },
+    {
+      "code": "UC_DE_AE",
+      "normal": 228,
+      "shift": 196,
+      "group": "German"
+    },
+    {
+      "code": "UC_DE_OE",
+      "normal": 246,
+      "shift": 214,
+      "group": "German"
+    },
+    {
+      "code": "UC_DE_UE",
+      "normal": 252,
+      "shift": 220,
+      "group": "German"
+    },
+    {
+      "code": "UC_DE_SS",
+      "normal": 223,
+      "shift": 7838,
+      "group": "German"
+    },
+    {
+      "code": "UC_EL_ALPHA",
+      "normal": 945,
+      "shift": 913,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_BETA",
+      "normal": 946,
+      "shift": 914,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_GAMMA",
+      "normal": 947,
+      "shift": 915,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_DELTA",
+      "normal": 948,
+      "shift": 916,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_EPSILON",
+      "normal": 949,
+      "shift": 917,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_ZETA",
+      "normal": 950,
+      "shift": 918,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_ETA",
+      "normal": 951,
+      "shift": 919,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_THETA",
+      "normal": 952,
+      "shift": 920,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_IOTA",
+      "normal": 953,
+      "shift": 921,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_KAPPA",
+      "normal": 954,
+      "shift": 922,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_LAMBDA",
+      "normal": 955,
+      "shift": 923,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_MU",
+      "normal": 956,
+      "shift": 924,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_NU",
+      "normal": 957,
+      "shift": 925,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_XI",
+      "normal": 958,
+      "shift": 926,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_OMIKRON",
+      "normal": 959,
+      "shift": 927,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_PI",
+      "normal": 960,
+      "shift": 928,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_RHO",
+      "normal": 961,
+      "shift": 929,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_FINAL_SIGMA",
+      "normal": 962,
+      "shift": 931,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_SIGMA",
+      "normal": 963,
+      "shift": 931,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_TAU",
+      "normal": 964,
+      "shift": 932,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_UPSILON",
+      "normal": 965,
+      "shift": 933,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_PHI",
+      "normal": 981,
+      "shift": 934,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_CHI",
+      "normal": 967,
+      "shift": 935,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_PSI",
+      "normal": 968,
+      "shift": 936,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_OMEGA",
+      "normal": 969,
+      "shift": 937,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_EPSILON_SYM",
+      "normal": 1013,
+      "shift": 917,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_THETA_SYM",
+      "normal": 977,
+      "shift": 920,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_KAPPA_SYM",
+      "normal": 1008,
+      "shift": 922,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_PI_SYM",
+      "normal": 982,
+      "shift": 937,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_RHO_SYM",
+      "normal": 1009,
+      "shift": 929,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_EL_PHI_SYM",
+      "normal": 966,
+      "shift": 934,
+      "group": "Greek"
+    },
+    {
+      "code": "UC_PL_A_OGONEK",
+      "normal": 261,
+      "shift": 260,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_C_ACUTE",
+      "normal": 263,
+      "shift": 262,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_E_OGONEK",
+      "normal": 281,
+      "shift": 280,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_L_STROKE",
+      "normal": 322,
+      "shift": 321,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_O_ACUTE",
+      "normal": 243,
+      "shift": 242,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_N_ACUTE",
+      "normal": 324,
+      "shift": 323,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_S_ACUTE",
+      "normal": 347,
+      "shift": 346,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_Z_ACUTE",
+      "normal": 378,
+      "shift": 377,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PL_Z_DOT",
+      "normal": 380,
+      "shift": 379,
+      "group": "Polish"
+    },
+    {
+      "code": "UC_PT_A_GRAVE",
+      "normal": 224,
+      "shift": 192,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_A_CIRCUMFLEX",
+      "normal": 226,
+      "shift": 194,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_C_CEDILLA",
+      "normal": 231,
+      "shift": 199,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_E_GRAVE",
+      "normal": 232,
+      "shift": 200,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_E_ACUTE",
+      "normal": 233,
+      "shift": 201,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_E_CIRCUMFLEX",
+      "normal": 234,
+      "shift": 202,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_O_CIRCUMFLEX",
+      "normal": 244,
+      "shift": 212,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_OA",
+      "normal": 243,
+      "shift": 211,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_U_GRAVE",
+      "normal": 249,
+      "shift": 217,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_U_CIRCUMFLEX",
+      "normal": 251,
+      "shift": 219,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_A_TILDE",
+      "normal": 227,
+      "shift": 195,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_PT_AA",
+      "normal": 225,
+      "shift": 193,
+      "group": "Portuguese"
+    },
+    {
+      "code": "UC_RO_A",
+      "normal": 259,
+      "shift": 258,
+      "group": "Romanian"
+    },
+    {
+      "code": "UC_RO_AI",
+      "normal": 226,
+      "shift": 194,
+      "group": "Romanian"
+    },
+    {
+      "code": "UC_RO_I",
+      "normal": 238,
+      "shift": 206,
+      "group": "Romanian"
+    },
+    {
+      "code": "UC_RO_S",
+      "normal": 537,
+      "shift": 536,
+      "group": "Romanian"
+    },
+    {
+      "code": "UC_RO_T",
+      "normal": 539,
+      "shift": 538,
+      "group": "Romanian"
+    },
+    {
+      "code": "UC_RU_A",
+      "normal": 1072,
+      "shift": 1040,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_B",
+      "normal": 1073,
+      "shift": 1041,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_V",
+      "normal": 1074,
+      "shift": 1042,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_G",
+      "normal": 1075,
+      "shift": 1043,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_D",
+      "normal": 1076,
+      "shift": 1044,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_YE",
+      "normal": 1077,
+      "shift": 1045,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_YO",
+      "normal": 1105,
+      "shift": 1025,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_ZH",
+      "normal": 1078,
+      "shift": 1046,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_Z",
+      "normal": 1079,
+      "shift": 1047,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_I",
+      "normal": 1080,
+      "shift": 1048,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_Y",
+      "normal": 1081,
+      "shift": 1049,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_K",
+      "normal": 1082,
+      "shift": 1050,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_L",
+      "normal": 1083,
+      "shift": 1051,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_M",
+      "normal": 1084,
+      "shift": 1052,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_N",
+      "normal": 1085,
+      "shift": 1053,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_O",
+      "normal": 1086,
+      "shift": 1054,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_P",
+      "normal": 1087,
+      "shift": 1055,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_R",
+      "normal": 1088,
+      "shift": 1056,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_S",
+      "normal": 1089,
+      "shift": 1057,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_T",
+      "normal": 1090,
+      "shift": 1058,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_U",
+      "normal": 1091,
+      "shift": 1059,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_F",
+      "normal": 1092,
+      "shift": 1060,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_KH",
+      "normal": 1093,
+      "shift": 1061,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_TS",
+      "normal": 1094,
+      "shift": 1062,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_CH",
+      "normal": 1095,
+      "shift": 1063,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_SH",
+      "normal": 1096,
+      "shift": 1064,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_SHCH",
+      "normal": 1097,
+      "shift": 1065,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_HARD",
+      "normal": 1098,
+      "shift": 1066,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_BI",
+      "normal": 1099,
+      "shift": 1067,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_SOFT",
+      "normal": 1100,
+      "shift": 1068,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_E",
+      "normal": 1101,
+      "shift": 1069,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_YU",
+      "normal": 1102,
+      "shift": 1070,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_YA",
+      "normal": 1103,
+      "shift": 1071,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_YEYO",
+      "normal": 1077,
+      "shift": 1105,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_RU_TONE",
+      "normal": 1100,
+      "shift": 1098,
+      "group": "Russian"
+    },
+    {
+      "code": "UC_SR_A",
+      "normal": 1072,
+      "shift": 1040,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_B",
+      "normal": 1073,
+      "shift": 1041,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_V",
+      "normal": 1074,
+      "shift": 1042,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_G",
+      "normal": 1075,
+      "shift": 1043,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_D",
+      "normal": 1076,
+      "shift": 1044,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_DJ",
+      "normal": 1106,
+      "shift": 1026,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_E",
+      "normal": 1077,
+      "shift": 1045,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_ZH",
+      "normal": 1078,
+      "shift": 1046,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_Z",
+      "normal": 1079,
+      "shift": 1047,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_I",
+      "normal": 1080,
+      "shift": 1048,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_J",
+      "normal": 1112,
+      "shift": 1032,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_K",
+      "normal": 1082,
+      "shift": 1050,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_L",
+      "normal": 1083,
+      "shift": 1051,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LJ",
+      "normal": 1113,
+      "shift": 1033,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_M",
+      "normal": 1084,
+      "shift": 1052,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_N",
+      "normal": 1085,
+      "shift": 1053,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_NJ",
+      "normal": 1114,
+      "shift": 1034,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_O",
+      "normal": 1086,
+      "shift": 1054,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_P",
+      "normal": 1087,
+      "shift": 1055,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_R",
+      "normal": 1088,
+      "shift": 1056,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_S",
+      "normal": 1089,
+      "shift": 1057,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_T",
+      "normal": 1090,
+      "shift": 1058,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_CU",
+      "normal": 1115,
+      "shift": 1035,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_U",
+      "normal": 1091,
+      "shift": 1059,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_F",
+      "normal": 1092,
+      "shift": 1060,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_H",
+      "normal": 1093,
+      "shift": 1061,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_C",
+      "normal": 1094,
+      "shift": 1062,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_CH",
+      "normal": 1095,
+      "shift": 1063,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_DZ",
+      "normal": 1119,
+      "shift": 1039,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_SH",
+      "normal": 1096,
+      "shift": 1064,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LAT_CH",
+      "normal": 269,
+      "shift": 268,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LAT_CU",
+      "normal": 263,
+      "shift": 262,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LAT_DJ",
+      "normal": 273,
+      "shift": 272,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LAT_SH",
+      "normal": 353,
+      "shift": 352,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SR_LAT_ZH",
+      "normal": 382,
+      "shift": 381,
+      "group": "Serbian"
+    },
+    {
+      "code": "UC_SK_AD",
+      "normal": 228,
+      "shift": 196,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_AA",
+      "normal": 225,
+      "shift": 193,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_EA",
+      "normal": 233,
+      "shift": 201,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_IA",
+      "normal": 237,
+      "shift": 205,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_UA",
+      "normal": 250,
+      "shift": 218,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_OA",
+      "normal": 243,
+      "shift": 211,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_OX",
+      "normal": 244,
+      "shift": 212,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_YA",
+      "normal": 253,
+      "shift": 221,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_DC",
+      "normal": 271,
+      "shift": 270,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_TC",
+      "normal": 357,
+      "shift": 356,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_NC",
+      "normal": 328,
+      "shift": 327,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_LC",
+      "normal": 318,
+      "shift": 317,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_CC",
+      "normal": 269,
+      "shift": 268,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_ZC",
+      "normal": 382,
+      "shift": 381,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_SC",
+      "normal": 353,
+      "shift": 352,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_SK_RA",
+      "normal": 341,
+      "shift": 340,
+      "group": "Slovak"
+    },
+    {
+      "code": "UC_ES_A_ACUTE",
+      "normal": 225,
+      "shift": 193,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_C_CEDILLA",
+      "normal": 231,
+      "shift": 199,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_E_ACUTE",
+      "normal": 233,
+      "shift": 201,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_I_ACUTE",
+      "normal": 237,
+      "shift": 205,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_O_ACUTE",
+      "normal": 243,
+      "shift": 211,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_U_ACUTE",
+      "normal": 250,
+      "shift": 218,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_U_DIERESIS",
+      "normal": 252,
+      "shift": 220,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_ES_N_TILDE",
+      "normal": 241,
+      "shift": 209,
+      "group": "Spanish"
+    },
+    {
+      "code": "UC_SV_AE",
+      "normal": 228,
+      "shift": 196,
+      "group": "Swedish"
+    },
+    {
+      "code": "UC_SV_AO",
+      "normal": 229,
+      "shift": 197,
+      "group": "Swedish"
+    },
+    {
+      "code": "UC_SV_OE",
+      "normal": 246,
+      "shift": 214,
+      "group": "Swedish"
+    },
+    {
+      "code": "UC_UK_A",
+      "normal": 1072,
+      "shift": 1040,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_B",
+      "normal": 1073,
+      "shift": 1041,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_V",
+      "normal": 1074,
+      "shift": 1042,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_H",
+      "normal": 1075,
+      "shift": 1043,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_G",
+      "normal": 1169,
+      "shift": 1168,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_D",
+      "normal": 1076,
+      "shift": 1044,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_E",
+      "normal": 1077,
+      "shift": 1045,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_IE",
+      "normal": 1108,
+      "shift": 1028,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_ZH",
+      "normal": 1078,
+      "shift": 1046,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_Z",
+      "normal": 1079,
+      "shift": 1047,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_Y",
+      "normal": 1080,
+      "shift": 1048,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_I",
+      "normal": 1110,
+      "shift": 1030,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_YI",
+      "normal": 1111,
+      "shift": 1031,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_I_SHORT",
+      "normal": 1081,
+      "shift": 1049,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_K",
+      "normal": 1082,
+      "shift": 1050,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_L",
+      "normal": 1083,
+      "shift": 1051,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_M",
+      "normal": 1084,
+      "shift": 1052,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_N",
+      "normal": 1085,
+      "shift": 1053,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_O",
+      "normal": 1086,
+      "shift": 1054,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_P",
+      "normal": 1087,
+      "shift": 1055,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_R",
+      "normal": 1088,
+      "shift": 1056,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_S",
+      "normal": 1089,
+      "shift": 1057,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_T",
+      "normal": 1090,
+      "shift": 1058,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_U",
+      "normal": 1091,
+      "shift": 1059,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_F",
+      "normal": 1092,
+      "shift": 1060,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_KH",
+      "normal": 1093,
+      "shift": 1061,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_TS",
+      "normal": 1094,
+      "shift": 1062,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_CH",
+      "normal": 1095,
+      "shift": 1063,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_SH",
+      "normal": 1096,
+      "shift": 1064,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_SCH",
+      "normal": 1097,
+      "shift": 1065,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_SOFT",
+      "normal": 1100,
+      "shift": 1068,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_YU",
+      "normal": 1102,
+      "shift": 1070,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_YA",
+      "normal": 1103,
+      "shift": 1071,
+      "group": "Ukrainian"
+    },
+    {
+      "code": "UC_UK_APOSTROPHE",
+      "normal": 700,
+      "shift": 0,
+      "group": "Ukrainian"
+    }
+  ]
+}

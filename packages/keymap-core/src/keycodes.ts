@@ -47,10 +47,14 @@ export function normalizeZmkKeycodes(keycodes: KeycodeDef[]): NormalizedKeycode[
 
 export function getBehaviourParams(
   parsedParams: Array<{ value?: string | number }>,
-  behaviour: { params?: unknown[]; commands?: Array<{ code: string; additionalParams?: unknown[] }> } | undefined
+  behaviour: { code?: string; params?: unknown[]; commands?: Array<{ code: string; additionalParams?: unknown[] }> } | undefined
 ): unknown[] {
   if (!behaviour) return []
   const firstParsedParam = parsedParams?.[0] ?? {}
+  // A UC_* macro expands to both binding cells in firmware. Keep its single
+  // source token opaque instead of appending an empty second parameter.
+  if (behaviour.code === '&uc' && parsedParams.length === 1 &&
+    /^UC_/.test(String(firstParsedParam.value))) return ['raw']
   const commands = Object.fromEntries((behaviour.commands ?? []).map(c => [c.code, c]))
   const firstValue = (firstParsedParam as { value?: string }).value
   return [

@@ -60,6 +60,13 @@ Click a stacked keycap row. One dialog edits that layer’s ZMK binding:
 - Hold-tap nodes are read into the keymap. Edit key changes tapping term and flavor for every key that uses `&mt` or `&lt`. The next row offers two presets: Homerow (`&hm`, modifier + key, with term, flavor, quick-tap, and prior-idle) and Autoshift (`&as`, one key — hold sends that key shifted, tap sends it — with a shared term). Apply adds its node when the keymap does not have it. Cancel leaves the hold-tap list unchanged. A hold-tap already in the file keeps its name and can still be assigned; there is no form to invent another behaviour. Save rewrites those timing lines and inserts missing preset nodes when `holdTaps` is set.
 - **Recipes** (not a general macro editor): one built-in chip, `&rgblayer` (Layer + RGB). Apply writes `&rgblayer <layer> RGB_COLOR_HSB(h,s,b)` and ensures a fixed `zmk,behavior-macro-two-param` node under `behaviors` on Save when `rgbLayerRecipe` is set or a binding already uses `&rgblayer`. The dialog shows layer chips plus an HSB picker. Arbitrary ZMK macros stay in the `.keymap` text; the SPA does not invent or edit open-ended macro sequences.
 
+## Unicode input
+
+The `&uc` behavior has a dedicated [Unicode picker](unicode-picker.md) for
+normal/Shift code points, curated upstream aliases, and runtime input-mode
+switches. It requires `urob/zmk-unicode` and host input setup; Save adds the
+module header but never changes `west.yml` or OS settings.
+
 ## Conditional layers
 
 A then-layer is on only while every if-layer is active (Lower + Raise → Adjust). The rule lives on the layer strip, beside the layer it turns on: that row keeps an accent rail, and its name tooltip reads `When Lower and Raise are held, show Adjust`. Hovering it highlights the held layers in the table and the keys that activate them; hovering a held layer highlights the then-layer row. On a key that holds an if-layer (`&mo` or `&lt`), the then-layer row is struck through: that binding does not fire while the key stays down. `&to`, `&tog`, and `&sl` leave the key free and stay unmarked. Add and remove sit under Add Layer. Parse/splice live in `keymap-core` (`dts-conditional-layers`); Save rewrites the `conditional_layers { … }` block with the keymap contract ([ADR 0002](adr/0002-keymap-file-contract.md)). Deleting a layer renumbers the rules and drops one that loses its then-layer or no longer has two held layers. A then-layer numbered at or below a held layer stays valid and warns that the held layer can cover it.
