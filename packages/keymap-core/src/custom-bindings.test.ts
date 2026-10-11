@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { parseDtsKeymap } from './dts-keymap.js'
 import { getBehaviourParams } from './keycodes.js'
+import { acceptNamedLayoutInfo } from './layout.js'
+import { pickInfoLayout } from './keyboard-bundle.js'
 import {
   buildKeymapCode,
   isPrimaryKeymapJson,
@@ -74,4 +76,68 @@ describe('well-formed unknown behaviors', () => {
       expect(() => validateKeymapJson(keymap)).toThrow(KeymapValidationError)
     }
   )
+
+  it('round-trips a named layout file with reset, Unicode, and encoders', () => {
+    const source = `#include <behaviors.dtsi>
+#include <behaviors/unicode.dtsi>
+
+/ {
+    chosen {
+        zmk,physical-layout = &default_layout;
+    };
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <&kp A &uc UC_DE_AE &sys_reset &studio_unlock>;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+        };
+    };
+};
+`
+    const info = {
+      id: 'split',
+      name: 'Split',
+      layouts: {
+        default_layout: {
+          layout: [
+            { x: 0, y: 0, row: 0, col: 0 },
+            { x: 1, y: 0, row: 0, col: 1 },
+            { x: 2, y: 0, row: 0, col: 2 },
+            { x: 3, y: 0, row: 0, col: 3 }
+          ]
+        },
+        narrow_layout: {
+          layout: [
+            { x: 0, y: 0, row: 0, col: 0 },
+            { x: 1, y: 0, row: 0, col: 1 }
+          ]
+        }
+      },
+      sensors: [{ ref: 'encoder', compatible: 'alps,ec11' }]
+    }
+
+    expect(acceptNamedLayoutInfo(info)).toBe(info)
+    const picked = pickInfoLayout(info)
+    expect(picked.layoutName).toBe('default_layout')
+    expect(picked.layout).toHaveLength(4)
+
+    const raw = parseDtsKeymap(source)
+    expect(raw.layers[0]).toEqual(['&kp A', '&uc UC_DE_AE', '&sys_reset', '&studio_unlock'])
+    expect(raw.sensorBindings?.[0]).toEqual(['&inc_dec_kp C_VOL_DN C_VOL_UP'])
+    expect(raw.layers[0]).toHaveLength(picked.layout.length)
+
+    const parsed = parseKeymap(raw)
+    parsed.layers[0][0] = parseKeyBinding('&kp B')
+    const built = buildKeymapCode(picked.layout, parsed, { originalSource: source })
+    expect(built.mode).toBe('splice')
+    expect(built.code.slice(0, built.code.indexOf('keymap {'))).toBe(
+      source.slice(0, source.indexOf('keymap {'))
+    )
+    const again = parseDtsKeymap(built.code)
+    expect(again.layers[0]).toEqual(['&kp B', '&uc UC_DE_AE', '&sys_reset', '&studio_unlock'])
+    expect(again.sensorBindings).toEqual(raw.sensorBindings)
+  })
 })
