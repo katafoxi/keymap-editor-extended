@@ -6,6 +6,7 @@ import {
   isUserKeymapFilename,
   KeymapValidationError,
   loadBehaviorsData,
+  validateKeymapJson,
   matchingInfoJsonFilename,
   normalizeParsedKeymap,
   parseKeyBinding,
@@ -254,6 +255,19 @@ describe('parseKeymap sensorBindings', () => {
 })
 
 describe('loadBehaviorsData', () => {
+  it.each([
+    ['&sys_reset', 'Reset'],
+    ['&studio_unlock', 'Studio Unlock']
+  ])('recognizes the standard %s behavior', (code, name) => {
+    expect(loadBehaviorsData().find(row => row.code === code)).toMatchObject({
+      code,
+      name,
+      params: []
+    })
+    expect(() => validateKeymapJson({ layers: [[code]] })).not.toThrow()
+    expect(isPrimaryKeymapJson({ layers: [[code]] })).toBe(true)
+  })
+
   it('returns a copy so callers cannot mutate the shared catalog', () => {
     const first = loadBehaviorsData()
     const bt = first.find(row => row.code === '&bt')
