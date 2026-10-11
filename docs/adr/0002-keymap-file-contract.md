@@ -32,7 +32,7 @@ Local, GitHub, and Clipboard adapters all call the same `buildKeymapCode` helper
 
 ### Load priority
 
-1. Prefer `keymap.json` when it exists and `layers` are non-empty and valid.
+1. Prefer `keymap.json` when it exists, `layers` are non-empty and valid, and every Homerow (`&hm`) or Autoshift (`&as`) binding has that behaviour in `holdTaps`. A preset used without its node is not primary.
 2. Otherwise read raw `.keymap` → `parseDtsKeymap` (then the usual parse/encode path).
 3. Never treat `*.keymap.template` as the keymap file to overwrite as “the” source keymap.
 

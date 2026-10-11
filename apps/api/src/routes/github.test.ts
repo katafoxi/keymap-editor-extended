@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../index.js'
 import {
+  InfoValidationError,
   KeymapValidationError,
   buildHostKeymapSnapshot,
   parseHostKeymapSnapshot,
@@ -187,6 +188,81 @@ afterEach(() => {
 })
 
 describe('GET /github/authorize', () => {
+  it.each(['install', 'update'])(
+    'restarts protected OAuth after a %s return without trusting its code or installation ID',
+    async action => {
+      const res = await app.request(
+        `/github/authorize?code=unverified-install-code&installation_id=123&setup_action=${action}`
+      )
+      expect(res.status).toBe(302)
+      const location = new URL(res.headers.get('location') ?? '')
+      expect(location.origin).toBe('https://github.com')
+      expect(location.pathname).toBe('/login/oauth/authorize')
+      expect(location.searchParams.has('code')).toBe(false)
+      expect(location.searchParams.has('installation_id')).toBe(false)
+      const state = location.searchParams.get('state') ?? ''
+      expect(state).toBeTruthy()
+      const cookies = parseCookies(res)
+      expect(cookies[auth.OAUTH_STATE_COOKIE]?.value).toBe(state)
+      expect(cookies[auth.SID_COOKIE]).toBeUndefined()
+      expect(auth.getOauthToken).not.toHaveBeenCalled()
+      expect(auth.getOauthUser).not.toHaveBeenCalled()
+      expect(installations.fetchInstallationRepos).not.toHaveBeenCalled()
+      consumeOauthState(state)
+    }
+  )
+
+  it('returns an authenticated installer to the app without exchanging the installation code', async () => {
+    const sid = trackSid(createSession({ login: 'octocat', oauthAccessToken: 'user-token' }))
+    const res = await app.request(
+      '/github/authorize?code=unverified-install-code&installation_id=123&setup_action=install',
+      { headers: { Cookie: sessionCookie(sid) } }
+    )
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(config.APP_BASE_URL)
+    expect(getSession(sid)?.login).toBe('octocat')
+    expect(auth.getOauthToken).not.toHaveBeenCalled()
+    expect(auth.getOauthUser).not.toHaveBeenCalled()
+    expect(installations.fetchInstallationRepos).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    '',
+    '&installation_id=123',
+    '&installation_id=not-a-number&setup_action=install',
+    '&installation_id=0&setup_action=install',
+    '&installation_id=123&setup_action=unknown',
+    '&installation_id=123&setup_action=install&state=',
+    '&installation_id=123&setup_action=install&state=mismatched'
+  ])('does not downgrade an invalid OAuth callback to an installation return: %s', async suffix => {
+    const res = await app.request(`/github/authorize?code=unverified-code${suffix}`)
+    expect(res.status).toBe(401)
+    expect(auth.getOauthToken).not.toHaveBeenCalled()
+    expect(auth.getOauthUser).not.toHaveBeenCalled()
+    expect(parseCookies(res)[auth.SID_COOKIE]).toBeUndefined()
+  })
+
+  it('processes installation metadata through normal OAuth when a valid state is present', async () => {
+    const state = createOauthState()
+    vi.mocked(auth.getOauthToken).mockResolvedValue({
+      data: { access_token: 'oauth-token' }
+    } as Awaited<ReturnType<typeof auth.getOauthToken>>)
+    vi.mocked(auth.getOauthUser).mockResolvedValue({
+      data: { login: 'octocat' }
+    } as Awaited<ReturnType<typeof auth.getOauthUser>>)
+    const res = await app.request(
+      `/github/authorize?code=abc&installation_id=123&setup_action=install&state=${encodeURIComponent(state)}`,
+      { headers: { Cookie: `${auth.OAUTH_STATE_COOKIE}=${state}` } }
+    )
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(config.APP_BASE_URL)
+    expect(auth.getOauthToken).toHaveBeenCalledWith('abc')
+    const sid = parseCookies(res)[auth.SID_COOKIE]?.value
+    expect(sid).toBeTruthy()
+    trackSid(sid)
+    expect(consumeOauthState(state)).toBe(false)
+  })
+
   it('redirects to GitHub OAuth and sets oauth_state when code is missing', async () => {
     const res = await app.request('/github/authorize')
     expect(res.status).toBe(302)
@@ -865,6 +941,19 @@ describe('session and errors', () => {
       keymap: parseKeymap(VALID_KEYMAP),
       hostSnapshot: null,
       headSha: 'abc123'
+    })
+  })
+
+  it('GET /github/keyboard-files names a broken sibling layout file', async () => {
+    vi.mocked(files.fetchKeyboardFiles).mockRejectedValue(
+      new InfoValidationError(['layout LAYOUT must define "layout" array'], 'config/corne.json')
+    )
+    const { res } = await authedRequest('/github/keyboard-files/1/acme%2Flark')
+    expect(res.status).toBe(400)
+    expect(await res.json()).toEqual({
+      name: 'InfoValidationError',
+      errors: ['layout LAYOUT must define "layout" array'],
+      path: 'config/corne.json'
     })
   })
 

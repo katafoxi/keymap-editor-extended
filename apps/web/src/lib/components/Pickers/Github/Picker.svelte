@@ -54,7 +54,7 @@
   let branches: Array<{ name: string }> = $state([])
   let loadingBranches = $state(false)
   let loadingKeyboard = $state(false)
-  let loadError: { name?: string; errors?: string[] } | null = $state(null)
+  let loadError: { name?: string; errors?: string[]; path?: string } | null = $state(null)
   let loadWarnings: string[] | null = $state(null)
   /** Shared by effect loads and Reload so a late response cannot overwrite a newer one. */
   let keyboardLoadGeneration = 0
@@ -176,7 +176,12 @@
 
   $effect(() => {
     const onValidation = (err: unknown) => {
-      loadError = err as { name?: string; errors?: string[] }
+      const payload = err as { name?: string; errors?: string[]; path?: string }
+      loadError = {
+        name: payload.name,
+        errors: payload.errors,
+        ...(typeof payload.path === 'string' && payload.path ? { path: payload.path } : {})
+      }
       loadingKeyboard = false
     }
     github.on('repo-validation-error', onValidation)
@@ -423,6 +428,7 @@
       <ValidationErrors
         title={loadError.name || 'Error'}
         errors={loadError.errors || []}
+        path={loadError.path}
         otherRepoOrBranchAvailable={
           repositoryChoices.length > 1 || branchChoices.length > 0
         }

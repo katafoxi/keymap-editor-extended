@@ -1,4 +1,4 @@
-import { parseKeymap, HOST_KEYMAP_SNAPSHOT_PATH } from '@keymap-editor/keymap-core'
+import { parseKeymap, HOST_KEYMAP_SNAPSHOT_PATH, InfoValidationError } from '@keymap-editor/keymap-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiRequestOptions } from './api.js'
 import * as api from './api.js'
@@ -346,6 +346,29 @@ describe('fetchKeyboardFiles', () => {
     expect(requestUrls(request).some(url => url.endsWith(`/${KEYMAP_PATH}`))).toBe(false)
   })
 
+  it('keeps keymap.json primary when a layer uses an external behavior', async () => {
+    const keymap = {
+      ...KEYMAP_JSON,
+      layers: [['&vendor UC_DE_AE', '&kp A']],
+      holdTaps: [],
+      sensorBindings: []
+    }
+    const request = mockGithub(
+      {
+        'config/info.json': JSON.stringify(INFO),
+        config: LISTING,
+        'config/keymap.json': JSON.stringify(keymap),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: [HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO, 'main')
+
+    expect(result.keymap).toMatchObject({ layers: [['&vendor UC_DE_AE', '&kp A']] })
+    expect(requestUrls(request).some(url => url.endsWith(`/${KEYMAP_PATH}`))).toBe(false)
+  })
+
   it('lists config once and downloads .keymap only once when keymap.json is missing', async () => {
     const request = mockGithub(
       {
@@ -435,12 +458,125 @@ describe('fetchKeyboardFiles', () => {
         config: listing,
         'config/keymap.json': JSON.stringify(KEYMAP_JSON)
       },
-      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+      { missing: ['config/info.json', 'config/lark.json', HOST_KEYMAP_SNAPSHOT_PATH] }
     )
 
     const result = await fetchKeyboardFiles('1', REPO)
     expect(result.info).toBeNull()
     expect(result.keymap).toEqual(KEYMAP_JSON)
+  })
+
+  it('does not treat keymap.json as layout metadata for keymap.keymap', async () => {
+    const keymapPath = 'config/keymap.keymap'
+    const listing = [
+      { name: 'keymap.keymap', path: keymapPath },
+      { name: 'keymap.json', path: 'config/keymap.json' }
+    ]
+    const request = mockGithub(
+      {
+        config: listing,
+        'config/keymap.json': JSON.stringify(KEYMAP_JSON)
+      },
+      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+
+    expect(result.info).toBeNull()
+    expect(result.keymap).toEqual(KEYMAP_JSON)
+    expect(
+      requestUrls(request).filter(url => url.endsWith('/contents/config/keymap.json'))
+    ).toHaveLength(1)
+  })
+
+  it('uses the matching keymap JSON layout when info.json is missing', async () => {
+    const namedInfo = {
+      id: 'lark',
+      name: 'LARK',
+      layouts: {
+        default_layout: {
+          layout: [{ x: 0, y: 0, row: 0, col: 0 }]
+        }
+      }
+    }
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' },
+      { name: 'keymap.json', path: 'config/keymap.json' }
+    ]
+    const request = mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify(namedInfo),
+        'config/keymap.json': JSON.stringify(KEYMAP_JSON)
+      },
+      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+
+    expect(result.info).toEqual(namedInfo)
+    expect(requestUrls(request)).toContain(`/repos/${REPO}/contents/config/lark.json`)
+  })
+
+  it('ignores a named JSON file that has no layouts object', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify({ note: 'not a board' }),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+    expect(result.info).toBeNull()
+  })
+
+  it('names a named layout file when its layouts object is invalid', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify({ layouts: { LAYOUT: { layout: 'nope' } } }),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toMatchObject({
+      name: 'InfoValidationError',
+      path: 'config/lark.json'
+    })
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toBeInstanceOf(InfoValidationError)
+  })
+
+  it('names a named layout file when it is not valid JSON', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': '{',
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toMatchObject({
+      name: 'InfoValidationError',
+      path: 'config/lark.json',
+      errors: ['config/lark.json is not valid JSON']
+    })
   })
 
   it('returns a parsed host snapshot when host_keymap/snapshot.json exists', async () => {

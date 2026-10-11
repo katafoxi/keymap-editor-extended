@@ -122,6 +122,19 @@ describe('createKeyEditSession catalog', () => {
 })
 
 describe('createKeyEditSession extra cases', () => {
+  it.each(['&vendor UC_DE_AE', '&vendor 0xE4 0xC4', '&custom WRAP(1,2) 3'])(
+    'preserves unknown binding parameters when Apply is pressed: %s',
+    code => {
+      const onUpdate = vi.fn()
+      const binding = parseKeyBinding(code)
+      runSession(onUpdate, [binding], session => {
+        session.confirm()
+      })
+      expect(onUpdate).toHaveBeenCalledOnce()
+      expect(onUpdate.mock.calls[0][2]).toEqual(binding)
+    }
+  )
+
   it('builds &as A as autoshift LS(A) A', () => {
     const onUpdate = vi.fn()
     runSession(onUpdate, [{ value: '&none', params: [] }], session => {

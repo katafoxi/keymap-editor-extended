@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import { encodeKeyBinding } from '@keymap-editor/keymap-core'
 import { loadClipboardBundle, parseClipboardInfo, parseClipboardKeymap } from './load'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -31,6 +32,22 @@ describe('parseClipboardKeymap', () => {
     expect(result.originalSource).toBe(keymapText.trim())
     expect(result.keymap.layers.length).toBeGreaterThan(0)
     expect(result.keymap.keyboard).toBe('lark')
+  })
+
+  it('parses keymap.json that uses an external behavior', () => {
+    const json = JSON.stringify({ layers: [['&vendor UC_DE_AE']] })
+    const result = parseClipboardKeymap(json, {
+      keyboard: 'toy',
+      layoutName: 'LAYOUT'
+    })
+    expect(encodeKeyBinding(result.keymap.layers[0][0])).toBe('&vendor UC_DE_AE')
+  })
+
+  it('rejects keymap.json with a malformed behavior name', () => {
+    const json = JSON.stringify({ layers: [['&vendor-bad 1']] })
+    expect(() =>
+      parseClipboardKeymap(json, { keyboard: 'toy', layoutName: 'LAYOUT' })
+    ).toThrow(/invalid behaviour/)
   })
 
   it('parses keymap.json without originalSource', () => {

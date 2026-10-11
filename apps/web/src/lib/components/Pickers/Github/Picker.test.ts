@@ -293,8 +293,31 @@ describe('Github Picker', () => {
     flushSync()
 
     expect(document.body.textContent).toContain('missing config/info.json')
+    expect(document.body.textContent).toContain('config/info.json')
     expect(target.querySelector('.repo-value')?.textContent?.trim()).toBe('acme/lark')
     expect(target.querySelector('.branch-value')?.textContent?.trim()).toBe('main')
+  })
+
+  it('names the sibling layout file in a validation error', async () => {
+    vi.spyOn(github, 'fetchRepoBranches').mockResolvedValue([{ name: 'main' }])
+    vi.spyOn(github, 'fetchLayoutAndKeymap').mockRejectedValue(new Error('load failed'))
+
+    open()
+
+    await vi.waitFor(() => {
+      expect(target.querySelector('.branch-value')?.textContent?.trim()).toBe('main')
+    })
+
+    github.emit('repo-validation-error', {
+      name: 'InfoValidationError',
+      path: 'config/corne.json',
+      errors: ['layout LAYOUT must define "layout" array']
+    })
+    flushSync()
+
+    expect(document.body.textContent).toContain('Errors in the file')
+    expect(document.body.textContent).toContain('config/corne.json')
+    expect(document.body.textContent).not.toContain('config/info.json')
   })
 
   it('shows loadError when listing branches fails', async () => {

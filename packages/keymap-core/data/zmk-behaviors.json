@@ -176,6 +176,16 @@
     "params": []
   },
   {
+    "code": "&sys_reset",
+    "name": "Reset",
+    "params": []
+  },
+  {
+    "code": "&studio_unlock",
+    "name": "Studio Unlock",
+    "params": []
+  },
+  {
     "code": "&bootloader",
     "name": "Bootloader",
     "params": []

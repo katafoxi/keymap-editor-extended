@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   absentLayoutIndexes,
+  acceptNamedLayoutInfo,
   bindingColumnWidths,
   buildKeymapCode,
   inferRectangularLayout,
+  InfoValidationError,
   KeymapValidationError,
   parseKeymap,
   promoteAbsentLayoutKey,
@@ -208,6 +210,30 @@ describe('validateInfoJson absent', () => {
         }
       })
     ).toThrow(/absent/)
+  })
+})
+
+describe('acceptNamedLayoutInfo', () => {
+  const layout = {
+    layouts: {
+      LAYOUT: { layout: [{ x: 0, y: 0, row: 0, col: 0 }] }
+    }
+  }
+
+  it('keeps a file that has a valid layouts object', () => {
+    expect(acceptNamedLayoutInfo(layout)).toEqual(layout)
+  })
+
+  it('ignores JSON that is not a physical layout', () => {
+    expect(acceptNamedLayoutInfo({ layers: [['&kp A']] })).toBeNull()
+    expect(acceptNamedLayoutInfo({ note: 'not a board' })).toBeNull()
+    expect(acceptNamedLayoutInfo(null)).toBeNull()
+  })
+
+  it('rejects a layouts object that is not a valid info.json layout', () => {
+    expect(() => acceptNamedLayoutInfo({ layouts: { LAYOUT: { layout: 'nope' } } })).toThrow(
+      InfoValidationError
+    )
   })
 })
 

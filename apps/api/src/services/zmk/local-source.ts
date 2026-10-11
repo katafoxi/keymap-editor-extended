@@ -1,9 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import {
+  acceptNamedLayoutInfo,
   buildKeymapCode,
+  InfoValidationError,
   isPrimaryKeymapJson,
   isUserKeymapFilename,
+  matchingInfoJsonFilename,
   parseDtsKeymap,
   parseKeymap,
   pickInfoLayout,
@@ -21,19 +24,50 @@ const EMPTY_KEYMAP = {
   layers: [[]] as string[][]
 }
 
-export function loadLayout(layoutName = 'LAYOUT'): LayoutKey[] {
-  const layoutPath = path.join(config.ZMK_CONFIG_PATH, 'config', 'info.json')
-  let raw: string
+function missingLayoutInfo(): Error & { code: 'ENOENT' } {
+  return Object.assign(new Error('Layout info.json not found'), { code: 'ENOENT' as const })
+}
+
+function readLayoutInfo(): unknown {
+  const infoPath = path.join(config.ZMK_CONFIG_PATH, 'config', 'info.json')
   try {
-    raw = fs.readFileSync(layoutPath, 'utf8')
+    return JSON.parse(fs.readFileSync(infoPath, 'utf8'))
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw Object.assign(new Error('Layout info.json not found'), { code: 'ENOENT' })
-    }
-    throw err
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err
   }
-  const info = JSON.parse(raw)
-  return pickInfoLayout(info, { layoutName }).layout
+
+  const keymapFile = findKeymapFile()
+  if (keymapFile) {
+    const filename = matchingInfoJsonFilename(keymapFile)
+    const fallbackPath = filename
+      ? path.join(config.ZMK_CONFIG_PATH, 'config', filename)
+      : null
+    if (filename && fallbackPath) {
+      const publicPath = `config/${filename}`
+      try {
+        const parsed = acceptNamedLayoutInfo(
+          JSON.parse(fs.readFileSync(fallbackPath, 'utf8'))
+        )
+        if (parsed) return parsed
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+          /* no named layout file */
+        } else if (err instanceof SyntaxError) {
+          throw new InfoValidationError([`${publicPath} is not valid JSON`], publicPath)
+        } else if (err instanceof InfoValidationError) {
+          throw new InfoValidationError(err.errors, publicPath)
+        } else {
+          throw err
+        }
+      }
+    }
+  }
+
+  throw missingLayoutInfo()
+}
+
+export function loadLayout(layoutName?: string): LayoutKey[] {
+  return pickInfoLayout(readLayoutInfo(), { layoutName }).layout
 }
 
 function findKeymapFile(): string | null {
@@ -61,9 +95,7 @@ function loadKeymapFromDts(): ParsedKeymap | null {
   )
   let keyboard = 'unknown'
   try {
-    const info = JSON.parse(
-      fs.readFileSync(path.join(config.ZMK_CONFIG_PATH, 'config', 'info.json'), 'utf8')
-    )
+    const info = readLayoutInfo() as { id?: string; name?: string }
     keyboard = info.id || info.name || keyboard
   } catch {
     /* ignore */
