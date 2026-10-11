@@ -643,25 +643,18 @@ function applyHoldTaps(
   return spliceHoldTapsIntoDts(code, keymap.holdTaps)
 }
 
+/**
+ * A layer binding is loadable when it is a well-formed `&name` reference.
+ * Catalog membership is not required: unknown modules stay in keymap.json,
+ * Clipboard, and GitHub. Malformed names still fail.
+ */
 export function validateKeymapJson(keymap: unknown): void {
   const errors: string[] = []
 
   if (typeof keymap !== 'object' || keymap === null) {
     errors.push('keymap.json root must be an object')
   } else {
-    const km = keymap as {
-      layers?: unknown
-      holdTaps?: Array<{ code?: unknown; override?: unknown }>
-      rgbLayerRecipe?: unknown
-    }
-    const extraBehaviours = new Set(
-      (Array.isArray(km.holdTaps) ? km.holdTaps : [])
-        .filter(row => row && row.override !== true && typeof row.code === 'string')
-        .map(row => String(row.code))
-    )
-    if (km.rgbLayerRecipe === true) {
-      extraBehaviours.add(RGB_LAYER_RECIPE.code)
-    }
+    const km = keymap as { layers?: unknown }
     if (!Array.isArray(km.layers)) {
       errors.push('keymap must include "layers" array')
     } else {
@@ -675,11 +668,8 @@ export function validateKeymapJson(keymap: unknown): void {
             const keyPath = `layers[${i}][${j}]`
             if (typeof key !== 'string') {
               errors.push(`Value at "${keyPath}" must be a string`)
-            } else {
-              const bind = key.match(/^&.+?\b/)
-              if (!(bind && (bind[0] in behavioursByBind || extraBehaviours.has(bind[0])))) {
-                errors.push(`Key bind at "${keyPath}" has invalid behaviour`)
-              }
+            } else if (!/^&[a-zA-Z_][a-zA-Z0-9_]*(?=\s|$)/.test(key)) {
+              errors.push(`Key bind at "${keyPath}" has invalid behaviour`)
             }
           }
         }

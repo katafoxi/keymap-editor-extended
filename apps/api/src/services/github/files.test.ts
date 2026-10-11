@@ -346,6 +346,29 @@ describe('fetchKeyboardFiles', () => {
     expect(requestUrls(request).some(url => url.endsWith(`/${KEYMAP_PATH}`))).toBe(false)
   })
 
+  it('keeps keymap.json primary when a layer uses an external behavior', async () => {
+    const keymap = {
+      ...KEYMAP_JSON,
+      layers: [['&vendor UC_DE_AE', '&kp A']],
+      holdTaps: [],
+      sensorBindings: []
+    }
+    const request = mockGithub(
+      {
+        'config/info.json': JSON.stringify(INFO),
+        config: LISTING,
+        'config/keymap.json': JSON.stringify(keymap),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: [HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO, 'main')
+
+    expect(result.keymap).toMatchObject({ layers: [['&vendor UC_DE_AE', '&kp A']] })
+    expect(requestUrls(request).some(url => url.endsWith(`/${KEYMAP_PATH}`))).toBe(false)
+  })
+
   it('lists config once and downloads .keymap only once when keymap.json is missing', async () => {
     const request = mockGithub(
       {
