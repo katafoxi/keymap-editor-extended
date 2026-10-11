@@ -26,7 +26,7 @@ Primary user workflows (aligned with upstream intent):
 | Source | Role |
 |--------|------|
 | **Demo** | First-visit onboarding: bundled fixtures under `packages/keymap-core/fixtures/` (catalog in `fixtures/demo/`, Lark host maps in `fixtures/lark/`). Edits stay in the browser; there is no firmware write path. Loaded only via `apps/web/src/lib/demo/`. |
-| **GitHub** | Load/save `zmk-config` via GitHub App + OAuth. `config/info.json` is optional — without it the board is a flat rectangle from the binding count (same idea as Clipboard); Commit still writes keymap (+ host snapshot), not layout. Host layouts ship in the same commit as `host_keymap/snapshot.json` ([ADR 0005](adr/0005-host-keymap-github-snapshot.md)); IndexedDB is draft/cache for that path. |
+| **GitHub** | Load/save `zmk-config` via GitHub App + OAuth. `config/info.json` is optional; when it is absent, a matching `config/<keymap-name>.json` physical layout is accepted. Without either, the board is a flat rectangle from the binding count (same idea as Clipboard). Commit still writes keymap (+ host snapshot), not layout. Host layouts ship in the same commit as `host_keymap/snapshot.json` ([ADR 0005](adr/0005-host-keymap-github-snapshot.md)); IndexedDB is draft/cache for that path. |
 | **Clipboard** | Paste `.keymap` (info.json optional — otherwise a flat rectangular board); **Copy .keymap** puts spliced firmware text on the system clipboard (and in a dialog) for paste into the user’s repo. |
 | **File System Access API** | Chromium: read/write local files without a Node file server (planned / restore) |
 

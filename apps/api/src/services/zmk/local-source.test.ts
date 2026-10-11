@@ -100,6 +100,22 @@ describe('local-source LARK fixture', () => {
     expect(binds.some(b => b === '&kp M' || b.startsWith('&kp M'))).toBe(true)
   })
 
+  it('loads a matching keymap JSON layout when info.json is absent', () => {
+    const configDir = path.join(tmpRoot, 'config')
+    const infoPath = path.join(configDir, 'info.json')
+    const expectedLayout = zmk.loadLayout()
+    const info = JSON.parse(fs.readFileSync(infoPath, 'utf8')) as {
+      layouts: Record<string, unknown>
+    }
+    fs.rmSync(infoPath)
+    fs.writeFileSync(
+      path.join(configDir, 'lark.json'),
+      JSON.stringify({ ...info, layouts: { default_layout: info.layouts.LAYOUT } })
+    )
+
+    expect(zmk.loadLayout()).toEqual(expectedLayout)
+  })
+
   it('loadLayout throws a path-free ENOENT when info.json is missing', () => {
     fs.rmSync(path.join(tmpRoot, 'config', 'info.json'))
     expect(() => zmk.loadLayout()).toThrow(/Layout info\.json not found/)

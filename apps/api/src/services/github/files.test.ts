@@ -435,12 +435,65 @@ describe('fetchKeyboardFiles', () => {
         config: listing,
         'config/keymap.json': JSON.stringify(KEYMAP_JSON)
       },
-      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+      { missing: ['config/info.json', 'config/lark.json', HOST_KEYMAP_SNAPSHOT_PATH] }
     )
 
     const result = await fetchKeyboardFiles('1', REPO)
     expect(result.info).toBeNull()
     expect(result.keymap).toEqual(KEYMAP_JSON)
+  })
+
+  it('does not treat keymap.json as layout metadata for keymap.keymap', async () => {
+    const keymapPath = 'config/keymap.keymap'
+    const listing = [
+      { name: 'keymap.keymap', path: keymapPath },
+      { name: 'keymap.json', path: 'config/keymap.json' }
+    ]
+    const request = mockGithub(
+      {
+        config: listing,
+        'config/keymap.json': JSON.stringify(KEYMAP_JSON)
+      },
+      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+
+    expect(result.info).toBeNull()
+    expect(result.keymap).toEqual(KEYMAP_JSON)
+    expect(
+      requestUrls(request).filter(url => url.endsWith('/contents/config/keymap.json'))
+    ).toHaveLength(1)
+  })
+
+  it('uses the matching keymap JSON layout when info.json is missing', async () => {
+    const namedInfo = {
+      id: 'lark',
+      name: 'LARK',
+      layouts: {
+        default_layout: {
+          layout: [{ x: 0, y: 0, row: 0, col: 0 }]
+        }
+      }
+    }
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' },
+      { name: 'keymap.json', path: 'config/keymap.json' }
+    ]
+    const request = mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify(namedInfo),
+        'config/keymap.json': JSON.stringify(KEYMAP_JSON)
+      },
+      { missing: ['config/info.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+
+    expect(result.info).toEqual(namedInfo)
+    expect(requestUrls(request)).toContain(`/repos/${REPO}/contents/config/lark.json`)
   })
 
   it('returns a parsed host snapshot when host_keymap/snapshot.json exists', async () => {
