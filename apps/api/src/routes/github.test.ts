@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../index.js'
 import {
+  InfoValidationError,
   KeymapValidationError,
   buildHostKeymapSnapshot,
   parseHostKeymapSnapshot,
@@ -940,6 +941,19 @@ describe('session and errors', () => {
       keymap: parseKeymap(VALID_KEYMAP),
       hostSnapshot: null,
       headSha: 'abc123'
+    })
+  })
+
+  it('GET /github/keyboard-files names a broken sibling layout file', async () => {
+    vi.mocked(files.fetchKeyboardFiles).mockRejectedValue(
+      new InfoValidationError(['layout LAYOUT must define "layout" array'], 'config/corne.json')
+    )
+    const { res } = await authedRequest('/github/keyboard-files/1/acme%2Flark')
+    expect(res.status).toBe(400)
+    expect(await res.json()).toEqual({
+      name: 'InfoValidationError',
+      errors: ['layout LAYOUT must define "layout" array'],
+      path: 'config/corne.json'
     })
   })
 

@@ -7,7 +7,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { encodeKeyBinding } from '@keymap-editor/keymap-core'
+import { encodeKeyBinding, InfoValidationError } from '@keymap-editor/keymap-core'
 import { config } from '../../config.js'
 import * as zmk from './local-source.js'
 
@@ -114,6 +114,29 @@ describe('local-source LARK fixture', () => {
     )
 
     expect(zmk.loadLayout()).toEqual(expectedLayout)
+  })
+
+  it('ignores a named JSON file that has no layouts object', () => {
+    const configDir = path.join(tmpRoot, 'config')
+    fs.rmSync(path.join(configDir, 'info.json'))
+    fs.writeFileSync(path.join(configDir, 'lark.json'), JSON.stringify({ note: 'not a board' }))
+    expect(() => zmk.loadLayout()).toThrow(/Layout info\.json not found/)
+  })
+
+  it('names a named layout file when its layouts object is invalid', () => {
+    const configDir = path.join(tmpRoot, 'config')
+    fs.rmSync(path.join(configDir, 'info.json'))
+    fs.writeFileSync(
+      path.join(configDir, 'lark.json'),
+      JSON.stringify({ layouts: { LAYOUT: { layout: 'nope' } } })
+    )
+    expect(() => zmk.loadLayout()).toThrow(InfoValidationError)
+    try {
+      zmk.loadLayout()
+    } catch (err) {
+      expect(err).toMatchObject({ path: 'config/lark.json' })
+      expect(String(err)).not.toContain(tmpRoot)
+    }
   })
 
   it('loadLayout throws a path-free ENOENT when info.json is missing', () => {

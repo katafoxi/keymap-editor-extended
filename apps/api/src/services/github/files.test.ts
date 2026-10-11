@@ -1,4 +1,4 @@
-import { parseKeymap, HOST_KEYMAP_SNAPSHOT_PATH } from '@keymap-editor/keymap-core'
+import { parseKeymap, HOST_KEYMAP_SNAPSHOT_PATH, InfoValidationError } from '@keymap-editor/keymap-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ApiRequestOptions } from './api.js'
 import * as api from './api.js'
@@ -494,6 +494,66 @@ describe('fetchKeyboardFiles', () => {
 
     expect(result.info).toEqual(namedInfo)
     expect(requestUrls(request)).toContain(`/repos/${REPO}/contents/config/lark.json`)
+  })
+
+  it('ignores a named JSON file that has no layouts object', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify({ note: 'not a board' }),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    const result = await fetchKeyboardFiles('1', REPO)
+    expect(result.info).toBeNull()
+  })
+
+  it('names a named layout file when its layouts object is invalid', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': JSON.stringify({ layouts: { LAYOUT: { layout: 'nope' } } }),
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toMatchObject({
+      name: 'InfoValidationError',
+      path: 'config/lark.json'
+    })
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toBeInstanceOf(InfoValidationError)
+  })
+
+  it('names a named layout file when it is not valid JSON', async () => {
+    const listing = [
+      { name: 'lark.keymap', path: KEYMAP_PATH },
+      { name: 'lark.json', path: 'config/lark.json' }
+    ]
+    mockGithub(
+      {
+        config: listing,
+        'config/lark.json': '{',
+        [KEYMAP_PATH]: DTS
+      },
+      { missing: ['config/info.json', 'config/keymap.json', HOST_KEYMAP_SNAPSHOT_PATH] }
+    )
+
+    await expect(fetchKeyboardFiles('1', REPO)).rejects.toMatchObject({
+      name: 'InfoValidationError',
+      path: 'config/lark.json',
+      errors: ['config/lark.json is not valid JSON']
+    })
   })
 
   it('returns a parsed host snapshot when host_keymap/snapshot.json exists', async () => {

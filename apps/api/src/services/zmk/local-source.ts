@@ -1,7 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import {
+  acceptNamedLayoutInfo,
   buildKeymapCode,
+  InfoValidationError,
   isPrimaryKeymapJson,
   isUserKeymapFilename,
   matchingInfoJsonFilename,
@@ -22,11 +24,6 @@ const EMPTY_KEYMAP = {
   layers: [[]] as string[][]
 }
 
-function matchingInfoPath(keymapFile: string): string | null {
-  const filename = matchingInfoJsonFilename(keymapFile)
-  return filename ? path.join(config.ZMK_CONFIG_PATH, 'config', filename) : null
-}
-
 function missingLayoutInfo(): Error & { code: 'ENOENT' } {
   return Object.assign(new Error('Layout info.json not found'), { code: 'ENOENT' as const })
 }
@@ -41,12 +38,27 @@ function readLayoutInfo(): unknown {
 
   const keymapFile = findKeymapFile()
   if (keymapFile) {
-    const fallbackPath = matchingInfoPath(keymapFile)
-    if (fallbackPath) {
+    const filename = matchingInfoJsonFilename(keymapFile)
+    const fallbackPath = filename
+      ? path.join(config.ZMK_CONFIG_PATH, 'config', filename)
+      : null
+    if (filename && fallbackPath) {
+      const publicPath = `config/${filename}`
       try {
-        return JSON.parse(fs.readFileSync(fallbackPath, 'utf8'))
+        const parsed = acceptNamedLayoutInfo(
+          JSON.parse(fs.readFileSync(fallbackPath, 'utf8'))
+        )
+        if (parsed) return parsed
       } catch (err) {
-        if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+          /* no named layout file */
+        } else if (err instanceof SyntaxError) {
+          throw new InfoValidationError([`${publicPath} is not valid JSON`], publicPath)
+        } else if (err instanceof InfoValidationError) {
+          throw new InfoValidationError(err.errors, publicPath)
+        } else {
+          throw err
+        }
       }
     }
   }

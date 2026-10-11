@@ -10,10 +10,13 @@ export class KeymapValidationError extends Error {
 
 export class InfoValidationError extends Error {
   errors: string[]
+  /** Repo-relative file when the failure is not `config/info.json`. */
+  readonly path?: string
 
-  constructor(errors: string[]) {
+  constructor(errors: string[], path?: string) {
     super(errors.join('; '))
     this.name = 'InfoValidationError'
     this.errors = errors
+    this.path = path
   }
 }

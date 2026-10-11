@@ -296,3 +296,22 @@ export function validateInfoJson(info: unknown): void {
     throw new InfoValidationError(errors)
   }
 }
+
+function hasLayoutsField(value: unknown): boolean {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'layouts' in value &&
+    (value as { layouts?: unknown }).layouts !== undefined
+  )
+}
+
+/**
+ * A named `config/<keymap>.json` is a physical layout only when it has `layouts`.
+ * Other JSON is ignored. A present `layouts` value must pass {@link validateInfoJson}.
+ */
+export function acceptNamedLayoutInfo(value: unknown): unknown | null {
+  if (!hasLayoutsField(value)) return null
+  validateInfoJson(value)
+  return value
+}

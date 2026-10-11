@@ -1,8 +1,10 @@
 import path from 'node:path'
 import {
+  acceptNamedLayoutInfo,
   buildKeymapCode,
   encodeHostKeymapSnapshot,
   HOST_KEYMAP_SNAPSHOT_PATH,
+  InfoValidationError,
   isPrimaryKeymapJson,
   isUserKeymapFilename,
   matchingInfoJsonFilename,
@@ -345,9 +347,15 @@ async function fetchInfoJson(
       fallbackPath,
       { raw: true, ref }
     )
-    return parseJsonBody(infoRaw)
+    return acceptNamedLayoutInfo(parseJsonBody(infoRaw))
   } catch (err) {
     if (err instanceof MissingRepoFile) return null
+    if (err instanceof SyntaxError) {
+      throw new InfoValidationError([`${fallbackPath} is not valid JSON`], fallbackPath)
+    }
+    if (err instanceof InfoValidationError) {
+      throw new InfoValidationError(err.errors, fallbackPath)
+    }
     throw err
   }
 }

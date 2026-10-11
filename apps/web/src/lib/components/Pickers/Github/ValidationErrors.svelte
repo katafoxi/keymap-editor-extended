@@ -6,6 +6,8 @@
     onDismiss: () => void
     title: string
     errors: string[]
+    /** Repo-relative file. Overrides the title's default caption. */
+    path?: string
     otherRepoOrBranchAvailable?: boolean
   }
 
@@ -13,16 +15,18 @@
     onDismiss,
     title,
     errors,
+    path,
     otherRepoOrBranchAvailable = false
   }: Props = $props()
 
-  function fileFromTitle(t: string) {
+  function fileFromTitle(t: string, explicit?: string) {
+    if (explicit) return explicit
     if (t === 'InfoValidationError') return 'config/info.json'
     if (t === 'KeymapValidationError') return 'config/keymap.json'
     return undefined
   }
 
-  const file = $derived(fileFromTitle(title))
+  const file = $derived(fileFromTitle(title, path))
 </script>
 
 <Modal>
