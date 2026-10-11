@@ -11,7 +11,7 @@ import {
   shouldEnsureRgbLayerRecipe,
   spliceRgbLayerRecipeIntoDts
 } from './behavior-recipes.js'
-import { normalizeHoldTaps, spliceHoldTapsIntoDts } from './dts-behaviors.js'
+import { holdTapPresetFor, normalizeHoldTaps, spliceHoldTapsIntoDts } from './dts-behaviors.js'
 import {
   compileMacros,
   findKeymapLayerNodes,
@@ -682,9 +682,77 @@ export function validateKeymapJson(keymap: unknown): void {
   }
 }
 
+const BEHAVIOR_REF = /^&[A-Za-z_][A-Za-z0-9_]*/
+
+function behaviorRef(binding: string): string | null {
+  return BEHAVIOR_REF.exec(binding.trim())?.[0] ?? null
+}
+
+/** Named hold-tap nodes. An `override` entry only retimes `&mt` / `&lt`. */
+function namedHoldTapCodes(holdTaps: unknown): Set<string> {
+  const codes = new Set<string>()
+  if (!Array.isArray(holdTaps)) return codes
+  for (const item of holdTaps) {
+    if (typeof item !== 'object' || item === null) continue
+    const row = item as { code?: unknown; override?: unknown }
+    if (row.override === true) continue
+    if (typeof row.code === 'string' && row.code) codes.add(row.code)
+  }
+  return codes
+}
+
+function jsonBindingStrings(value: {
+  layers?: unknown
+  combos?: unknown
+  sensorBindings?: unknown
+}): string[] {
+  const out: string[] = []
+  if (Array.isArray(value.layers)) {
+    for (const layer of value.layers) {
+      if (!Array.isArray(layer)) continue
+      for (const key of layer) if (typeof key === 'string') out.push(key)
+    }
+  }
+  if (Array.isArray(value.combos)) {
+    for (const combo of value.combos) {
+      if (typeof combo !== 'object' || combo === null) continue
+      const binding = (combo as { binding?: unknown }).binding
+      if (typeof binding === 'string') out.push(binding)
+    }
+  }
+  if (Array.isArray(value.sensorBindings)) {
+    for (const row of value.sensorBindings) {
+      if (!Array.isArray(row)) continue
+      for (const key of row) if (typeof key === 'string') out.push(key)
+    }
+  }
+  return out
+}
+
 /**
- * True when keymap.json is non-empty and passes validateKeymapJson.
- * Empty shells (`[]`, `[[]]`) and invalid binds are not primary — callers fall back to .keymap.
+ * Homerow (`&hm`) and Autoshift (`&as`) are not stock behaviours.
+ * keymap.json that uses one without naming the node is incomplete, so load
+ * falls back to `.keymap`, which still has it.
+ */
+function presetHoldTapsAreDeclared(value: object): boolean {
+  const record = value as {
+    holdTaps?: unknown
+    layers?: unknown
+    combos?: unknown
+    sensorBindings?: unknown
+  }
+  const declared = namedHoldTapCodes(record.holdTaps)
+  return jsonBindingStrings(record).every(binding => {
+    const code = behaviorRef(binding)
+    return !code || !holdTapPresetFor(code) || declared.has(code)
+  })
+}
+
+/**
+ * True when keymap.json is non-empty, passes validateKeymapJson, and names
+ * every Homerow or Autoshift node it uses.
+ * Empty shells (`[]`, `[[]]`), invalid binds, and a preset hold-tap with no
+ * `holdTaps` entry are not primary — callers fall back to .keymap.
  */
 export function isPrimaryKeymapJson(value: unknown): boolean {
   if (typeof value !== 'object' || value === null) return false
@@ -693,11 +761,11 @@ export function isPrimaryKeymapJson(value: unknown): boolean {
   if (!layers.some(layer => Array.isArray(layer) && layer.length > 0)) return false
   try {
     validateKeymapJson(value)
-    return true
   } catch (err) {
     if (err instanceof KeymapValidationError) return false
     throw err
   }
+  return presetHoldTapsAreDeclared(value)
 }
 
 /** User `.keymap` only — excludes `*.keymap.template` (case-insensitive). */

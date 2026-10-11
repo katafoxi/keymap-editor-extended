@@ -168,6 +168,35 @@ describe('parseDtsHoldTaps', () => {
 
   it('rejects &hm in keymap.json when the hold-tap list is missing', () => {
     expect(isPrimaryKeymapJson({ layers: [['&hm LCTRL A']] })).toBe(false)
+    expect(isPrimaryKeymapJson({ layers: [['&hm LCTRL A']], holdTaps: [] })).toBe(false)
+    expect(
+      isPrimaryKeymapJson({
+        layers: [['&hm LCTRL A']],
+        holdTaps: [{ code: '&hm', override: true }]
+      })
+    ).toBe(false)
+    expect(
+      isPrimaryKeymapJson({
+        layers: [['&kp A']],
+        combos: [{ id: 'c', keyPositions: [0], binding: '&as LS(Q) Q' }]
+      })
+    ).toBe(false)
+  })
+
+  it('accepts a preset hold-tap once holdTaps names the node', () => {
+    expect(
+      isPrimaryKeymapJson({
+        layers: [['&hm LCTRL A']],
+        holdTaps: [{ code: '&hm', tappingTermMs: 280 }]
+      })
+    ).toBe(true)
+    expect(
+      isPrimaryKeymapJson({
+        layers: [['&as LS(Q) Q']],
+        holdTaps: [{ code: '&as' }]
+      })
+    ).toBe(true)
+    expect(isPrimaryKeymapJson({ layers: [['&mt LCTRL A']] })).toBe(true)
   })
 
   it('keeps an empty holdTaps array so a later load does not guess', () => {
