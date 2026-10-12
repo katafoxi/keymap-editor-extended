@@ -17,7 +17,7 @@ Publish **TCP 80** and **443** (and **22** for SSH). Do not expose the Node port
 | A | `@` | VPS IPv4 |
 | A | `www` | same IPv4 |
 
-Wait until lookups return only that address before expecting Let’s Encrypt to succeed.
+Wait until lookups return only that address before expecting Let’s Encrypt to succeed. Caddy answers `www` with a permanent redirect to `https://zmk-keymap-editor.com`. Leave the `www` A record in place so that certificate and redirect can be issued.
 
 ## 2. Production GitHub App
 

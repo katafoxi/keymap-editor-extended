@@ -242,6 +242,36 @@ code {
   flex-direction: column;
 }
 
+/* One line of page description. Stays in the rendered document. */
+.site-intro {
+  flex: 0 0 auto;
+  align-self: stretch;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 12px 0;
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.site-intro h1,
+.site-intro p {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.site-intro h1 {
+  font-weight: 700;
+}
+
+.site-intro p {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 /* Source / repo / branch pickers — match original Selector look */
 #app-root select {
   font-family: Quicksand, avenir, sans-serif;
