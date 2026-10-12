@@ -1,4 +1,8 @@
-zmk-keymap-editor.com, www.zmk-keymap-editor.com {
+www.zmk-keymap-editor.com {
+	redir https://zmk-keymap-editor.com{uri} permanent
+}
+
+zmk-keymap-editor.com {
 	encode gzip
 	reverse_proxy app:8080
 }

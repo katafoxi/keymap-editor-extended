@@ -5,6 +5,27 @@
     <link rel="icon" href="/editor-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZMK Keymap Editor</title>
+    <meta
+      name="description"
+      content="ZMK Keymap Editor — edit the .keymap in the browser or from GitHub, then the national characters your system types."
+    />
+    <link rel="canonical" href="https://zmk-keymap-editor.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ZMK Keymap Editor" />
+    <meta
+      property="og:description"
+      content="ZMK Keymap Editor — edit the .keymap in the browser or from GitHub, then the national characters your system types."
+    />
+    <meta property="og:url" content="https://zmk-keymap-editor.com/" />
+    <meta property="og:image" content="https://zmk-keymap-editor.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="ZMK Keymap Editor showing scheme, one layer, multilayer, the host editor, and visual combos."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://zmk-keymap-editor.com/og.jpg" />
     <script src="/color-scheme.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +35,16 @@
     />
   </head>
   <body>
-    <div id="app-root"></div>
+    <div id="app-root">
+      <!-- Stays after the editor mounts, so the rendered page still has this text. -->
+      <main class="site-intro">
+        <h1>ZMK Keymap Editor</h1>
+        <p>
+          — edit the .keymap in the browser or from GitHub, then the national
+          characters your system types.
+        </p>
+      </main>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
