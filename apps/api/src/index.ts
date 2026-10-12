@@ -59,6 +59,14 @@ export function createApp(options: CreateAppOptions = {}): Hono {
 
   app.use('*', cors({ origin, credentials: true }))
   app.use('*', logger(printRequestLog))
+  // secureHeaders writes Cross-Origin-Resource-Policy after next(). This wrapper
+  // runs later and opens only the link-preview image, which other sites put in <img>.
+  app.use('*', async (c, next) => {
+    await next()
+    if (c.req.path === '/og.jpg') {
+      c.res.headers.set('Cross-Origin-Resource-Policy', 'cross-origin')
+    }
+  })
   app.use(
     '*',
     secureHeaders({

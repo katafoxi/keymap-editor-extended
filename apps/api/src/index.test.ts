@@ -58,6 +58,25 @@ describe('production static security headers', () => {
     expect(res.headers.get('x-content-type-options')).toBe('nosniff')
     expect(res.headers.get('referrer-policy')).toBeTruthy()
     expect(res.headers.get('strict-transport-security')).toBeNull()
+    expect(res.headers.get('cross-origin-resource-policy')).toBe('same-origin')
+  })
+
+  it('lets other sites embed /og.jpg and keeps other files same-origin', async () => {
+    const webDist = tempWebDist()
+    fs.writeFileSync(path.join(webDist, 'og.jpg'), 'jpeg')
+    const app = createApp({
+      webDist,
+      appBaseUrl: 'https://zmk-keymap-editor.com',
+      enableGithub: false,
+      enableDevServer: false
+    })
+    const preview = await app.request('https://zmk-keymap-editor.com/og.jpg')
+    expect(preview.status).toBe(200)
+    expect(preview.headers.get('content-type')).toMatch(/^image\/jpeg/)
+    expect(preview.headers.get('cross-origin-resource-policy')).toBe('cross-origin')
+
+    const script = await app.request('/assets/app.js')
+    expect(script.headers.get('cross-origin-resource-policy')).toBe('same-origin')
   })
 
   it('GET / with a public Host still serves the SPA (local adapter Host guard is not global)', async () => {

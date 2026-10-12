@@ -491,10 +491,9 @@
     left: 0;
     z-index: 9;
     min-width: 10rem;
-    max-height: min(20rem, 70vh);
     margin: 0;
     padding: 4px 0;
-    overflow: auto;
+    overflow: visible;
     list-style: none;
     background: var(--surface);
     border: 1px solid var(--border);

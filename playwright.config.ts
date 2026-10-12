@@ -63,7 +63,11 @@ export default defineConfig({
     baseURL: webOrigin,
     browserName: 'chromium',
     viewport: { width: 1600, height: 1000 },
-    trace: 'retain-on-failure'
+    trace: 'retain-on-failure',
+    // Optional local Chromium (Brave, Chrome) when the Playwright browser download is unavailable.
+    launchOptions: process.env.PLAYWRIGHT_EXECUTABLE_PATH
+      ? { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }
+      : undefined
   },
   webServer: [
     {
