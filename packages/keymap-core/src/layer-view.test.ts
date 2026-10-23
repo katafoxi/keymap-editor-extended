@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  clipShownLayers,
   effectiveShownLayers,
   remapShownLayersAfterDelete,
   standardLayerView,
@@ -63,5 +64,12 @@ describe('shown layers', () => {
   it('falls back to layer0 when the last marked layer is deleted', () => {
     const view: LayerView = { shown: [2], layer0Raw: false }
     expect(remapShownLayersAfterDelete(view, 2, 2).shown).toEqual([0])
+  })
+
+  it('clips marks past the layer count and keeps a fitting view as is', () => {
+    const view: LayerView = { shown: [0, 3, 1], layer0Raw: true }
+    expect(clipShownLayers(view, 3)).toEqual({ shown: [0, 1], layer0Raw: true })
+    expect(clipShownLayers(view, 4)).toBe(view)
+    expect(clipShownLayers({ shown: [3], layer0Raw: false }, 3).shown).toEqual([0])
   })
 })

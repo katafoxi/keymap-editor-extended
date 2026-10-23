@@ -1,4 +1,5 @@
 import {
+  clipShownLayers,
   comboChordOverlap,
   comboChordOverlapPartners,
   comboKeysIssue,
@@ -322,6 +323,7 @@ export function undo(this: EditorState) {
   this.redoStack = [...this.redoStack, cloneParsedKeymap(this.draftKeymap)]
   this.draftKeymap = cloneParsedKeymap(prev)
   syncActiveComboId.call(this, this.draftKeymap.combos)
+  this.layerView = clipShownLayers(this.layerView, this.draftKeymap.layers.length)
   this.schedulePersist()
 }
 
@@ -333,6 +335,7 @@ export function redo(this: EditorState) {
   this.undoStack = [...this.undoStack, cloneParsedKeymap(this.draftKeymap)]
   this.draftKeymap = cloneParsedKeymap(next)
   syncActiveComboId.call(this, this.draftKeymap.combos)
+  this.layerView = clipShownLayers(this.layerView, this.draftKeymap.layers.length)
   this.schedulePersist()
 }
 
@@ -346,6 +349,7 @@ export async function discardDraft(this: EditorState): Promise<boolean> {
   if (!this.baselineKeymap || !this.draftKeymap || !this.isDirty) return false
   this.draftKeymap = cloneParsedKeymap(this.baselineKeymap)
   this.layout = cloneLayout(this.baselineLayout)
+  this.layerView = clipShownLayers(this.layerView, this.draftKeymap.layers.length)
   this.clearHistory()
   this.saveNotice = null
   await this.clearPersistedDraft()

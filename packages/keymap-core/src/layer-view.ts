@@ -54,6 +54,16 @@ export function remapShownLayersAfterDelete(
 }
 
 /**
+ * Drop marks past `layerCount`, e.g. after undo/redo shrinks the keymap.
+ * Returns `view` itself when every mark still fits.
+ */
+export function clipShownLayers(view: LayerView, layerCount: number): LayerView {
+  const kept = view.shown.filter(index => index >= 0 && index < layerCount)
+  if (kept.length === view.shown.length) return view
+  return { ...view, shown: kept.length > 0 || layerCount === 0 ? kept : [0] }
+}
+
+/**
  * Layers drawn on the keycap: section-6 rules, clipped to `layerCount`,
  * sorted ascending. An empty `shown` defaults to [0, 1, 2, 3].
  */

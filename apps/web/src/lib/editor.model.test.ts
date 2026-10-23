@@ -491,6 +491,20 @@ describe('EditorState model commands', () => {
     )
   }, 20_000)
 
+  it('drops a shown layer that redo or discard removes again', async () => {
+    await selectFixture()
+    editor.deleteLayer(3)
+    editor.undo()
+    editor.layerView = toggleShownLayer(editor.layerView, 3)
+    editor.redo()
+    assertInvariants(editor, false)
+
+    editor.addLayer()
+    editor.layerView = { shown: [0, 4], layer0Raw: false }
+    await editor.discardDraft()
+    assertInvariants(editor, false)
+  })
+
   it('restores the baseline after N edits and N undos', async () => {
     await fc.assert(
       fc.asyncProperty(
