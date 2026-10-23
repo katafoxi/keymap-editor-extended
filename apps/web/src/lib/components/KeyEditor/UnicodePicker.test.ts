@@ -39,6 +39,12 @@ afterEach(() => {
 })
 
 describe('UnicodePicker', () => {
+  it('does not stage a scalar for a new empty binding', () => {
+    open()
+    expect(lastBinding()).toBeNull()
+    expect(target.textContent).toContain('A digit string is a code point')
+  })
+
   it('creates a normal and Shift character pair with glyph previews', () => {
     open()
     input('Normal Unicode character or code point', 'ä')
@@ -69,6 +75,17 @@ describe('UnicodePicker', () => {
     target.querySelector<HTMLButtonElement>('[data-unicode-alias="UC_DE_OE"]')!.click()
     flushSync()
     expect(lastBinding()).toBe('&uc UC_DE_OE')
+    expect(target.querySelector('[data-unicode-alias-binding="UC_DE_OE"]')?.textContent).toContain('UC_DE_OE')
+    expect(target.querySelector<HTMLButtonElement>('[data-unicode-alias="UC_DE_OE"]')?.getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it('replaces a kept alias with numeric code points when a field changes', () => {
+    open('&uc UC_DE_AE')
+    expect(lastBinding()).toBe('&uc UC_DE_AE')
+    expect(target.querySelector('[data-unicode-alias-binding="UC_DE_AE"]')).not.toBeNull()
+    input('Normal Unicode character or code point', 'ö')
+    expect(lastBinding()).toBe('&uc 0xF6 0xC4')
+    expect(target.querySelector('[data-unicode-alias-binding]')).toBeNull()
   })
 
   it('creates an input mode switch rather than treating the sentinel as a glyph', () => {

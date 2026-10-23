@@ -15,6 +15,13 @@
   } = $props()
   const original = untrack(() => value)
   const initial = unicodeBindingState(original)
+
+  function aliasFrom(binding: KeyBindingNode): string | null {
+    if (binding.value !== '&uc' || binding.params.length !== 1) return null
+    const code = String(binding.params[0]?.value ?? '')
+    return UNICODE_ALIASES.some(row => row.code === code) ? code : null
+  }
+
   let kind = $state<'character' | 'mode'>(initial?.kind === 'mode' ? 'mode' : 'character')
   let normal = $state(initial?.kind === 'codepoints' ? unicodeCodePointLabel(initial.normal) : '')
   let shift = $state(initial?.kind === 'codepoints' && initial.shift !== 0 ? unicodeCodePointLabel(initial.shift) : '0')
@@ -23,6 +30,7 @@
   let group = $state('')
   let error = $state('')
   let opaque = $state(initial == null && original.params.length > 0)
+  let aliasCode = $state(aliasFrom(original))
   const normalCp = $derived(unicodeCodePoint(normal))
   const shiftCp = $derived(unicodeCodePoint(shift))
   const groups = [...new Set(UNICODE_ALIASES.map(row => row.group))]
@@ -37,6 +45,7 @@
 
   function characterChanged() {
     opaque = false
+    aliasCode = null
     try {
       const binding = unicodeBinding(normal, shift)
       error = ''
@@ -53,11 +62,13 @@
     normal = unicodeCodePointLabel(pair.normal)
     shift = pair.shift === 0 ? '0' : unicodeCodePointLabel(pair.shift)
     opaque = false
+    aliasCode = code
     error = ''
     onChange(binding)
   }
   function modeChanged() {
     opaque = false
+    aliasCode = null
     error = ''
     onChange(unicodeModeBinding(mode))
   }
@@ -88,6 +99,9 @@
   {#if opaque}
     <p class="unicode-note">This external expression is kept unchanged. Enter code points or pick an alias to replace it.</p>
   {/if}
+  {#if aliasCode}
+    <p class="unicode-note" data-unicode-alias-binding={aliasCode}>This binding keeps the alias {aliasCode}. Editing either field replaces it with numeric code points.</p>
+  {/if}
   {#if kind === 'character'}
     <div class="unicode-fields">
       <label>Normal
@@ -97,7 +111,7 @@
         <input aria-label="Shift Unicode character or code point" placeholder="Ä, U+00C4, or 0" value={shift} oninput={event => { shift = event.currentTarget.value; characterChanged() }} />
       </label>
     </div>
-    <p class="unicode-note">Enter one Unicode scalar, U+hex, 0xhex, or a decimal code point. Shift 0 reuses Normal; no uppercase conversion is guessed.</p>
+    <p class="unicode-note">Enter one character, or a code point as U+hex, 0xhex, or a decimal number. A digit string is a code point: 1 means U+0001, not the digit 1. Shift 0 reuses Normal; no uppercase conversion is guessed.</p>
     {#if normalCp != null && shiftCp != null}
       <output aria-label="Unicode character preview">Normal: {unicodeGlyph(normalCp)} · Shift: {unicodeGlyph(shiftCp || normalCp)}</output>
     {/if}
@@ -115,7 +129,7 @@
     </div>
     <div class="unicode-aliases">
       {#each matches as alias (alias.code)}
-        <button type="button" data-unicode-alias={alias.code} title={`${alias.group}: ${unicodeCodePointLabel(alias.normal)} / ${unicodeCodePointLabel(alias.shift || alias.normal)}`} onclick={() => chooseAlias(alias.code)}>
+        <button type="button" data-unicode-alias={alias.code} aria-pressed={aliasCode === alias.code} title={`${alias.group}: ${unicodeCodePointLabel(alias.normal)} / ${unicodeCodePointLabel(alias.shift || alias.normal)}`} onclick={() => chooseAlias(alias.code)}>
           <span>{unicodeGlyph(alias.normal)} · {unicodeGlyph(alias.shift || alias.normal)}</span><code>{alias.code}</code>
         </button>
       {:else}<p>No matching aliases. Any scalar can be entered above.</p>{/each}

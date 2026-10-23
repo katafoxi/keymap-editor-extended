@@ -136,6 +136,16 @@ describe('createKeyEditSession extra cases', () => {
     }
   )
 
+  it('leaves a new Unicode binding empty until the picker supplies one', () => {
+    const onUpdate = vi.fn()
+    runSession(onUpdate, [{ value: '&none', params: [] }], session => {
+      session.selectBehaviour({ code: '&uc' })
+      expect(session.bindingLabel).toBe('&uc')
+      session.confirm()
+    })
+    expect(encodeKeyBinding(onUpdate.mock.calls[0][2])).toBe('&uc')
+  })
+
   it('assigns a complete Unicode binding from its dedicated picker', () => {
     const onUpdate = vi.fn()
     const binding = parseKeyBinding('&uc 0xE4 0xC4')

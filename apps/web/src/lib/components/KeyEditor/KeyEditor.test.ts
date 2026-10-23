@@ -146,6 +146,25 @@ describe('KeyEditor value catalog', () => {
     expect(changes.at(-1)).toMatchObject({ code: '&uc', unicodeBinding: { value: '&uc' } })
   })
 
+  it('blocks Apply on a new Unicode binding until a scalar is entered', () => {
+    const changes: unknown[] = []
+    open({
+      bindingLabel: '&uc',
+      behaviours,
+      editorSlots: [slot(0, 'behaviour', '&uc', 'Behaviour')],
+      activeCodeIndex: 0,
+      choices: [],
+      onSelectBehaviour: choice => changes.push(choice),
+      onSelectValue: () => {},
+      onActivateSlot: () => {},
+      onConfirm: () => {},
+      onCancel: () => {}
+    })
+    expect(target.querySelector<HTMLButtonElement>('.key-editor-ok')?.disabled).toBe(true)
+    expect(changes).toEqual([])
+    expect(target.textContent).toContain('A digit string is a code point')
+  })
+
   it('shows the binding as a result sticker above the panel and explains chip styles', () => {
     open({
       bindingLabel: '&kp A',

@@ -225,9 +225,7 @@ export function createKeyEditSession(input: KeyEditSessionInput) {
       return
     }
     if (nextValue === '&uc') {
-      setDraft({ value: '&uc', params: [
-        { value: '0', params: [] }, { value: '0', params: [] }
-      ] }, 1)
+      setDraft({ value: '&uc', params: [] }, 0)
       return
     }
     if (isRgbLayerRecipeCode(nextValue)) {

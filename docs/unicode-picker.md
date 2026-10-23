@@ -5,8 +5,8 @@ host-layout glyph editing. It edits the firmware binding, not the host keymap.
 
 ## Character input
 
-- Enter one Unicode scalar, an explicit `U+...` / `0x...` value, or a decimal
-  code point for Normal and With Shift.
+- Enter one character, or a code point as `U+...`, `0x...`, or a decimal number.
+  A digit string is a code point: `1` means U+0001, not the character "1".
 - Shift `0` means reuse Normal, as defined by the module. Uppercase conversion
   is never guessed (for example, `ß` pairs with `ẞ`, not the string `SS`).
 - Values outside U+0000–U+10FFFF and UTF-16 surrogates are rejected. Multi-code-point
@@ -17,7 +17,9 @@ host-layout glyph editing. It edits the firmware binding, not the host keymap.
   `&uc UC_DE_AE`. Manual input covers code points outside that grid, including
   supplementary-plane characters.
 - Existing recognized aliases and numeric spellings stay unchanged on no-op
-  Apply. Unknown external expressions are kept opaque until explicitly replaced.
+  Apply. Reopening an alias keeps that token. The fields show its code points;
+  editing either field replaces the alias with a numeric pair. Unknown external
+  expressions are kept opaque until explicitly replaced.
 - Apply commits the staged key edit. Cancel leaves the original binding alone.
 
 ![Unicode picker](screenshots/unicode-picker.png)
