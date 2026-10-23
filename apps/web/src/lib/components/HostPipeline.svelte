@@ -1,8 +1,10 @@
 <script lang="ts">
   import { editor } from '../editor.svelte.js'
   import {
+    hostLayout,
     hostLegendColumns,
     pairedKbdId,
+    unicodeHostLayoutCompatibility,
     windowsCapsPairingRecommended
   } from '@keymap-editor/keymap-core'
   import logoLinux from '../assets/logo-linux.png'
@@ -43,6 +45,22 @@
         ? 'No pending host edits'
         : 'No custom host layout yet — Alt+click a key to edit what the OS types'
   )
+  const unicodeKeys = $derived(editor.unicodeKeyCount)
+  /** Service cells the base (English) column no longer types, for the keymap's `&uc` keys. */
+  const unicodeMissing = $derived.by(() => {
+    void editor.hostLayoutRevision
+    if (unicodeKeys === 0) return []
+    const base = hostLayout(editor.hostLegend.columns[0]?.layoutId ?? '')
+    return base ? [...unicodeHostLayoutCompatibility(base).missing] : []
+  })
+  const unicodeTitle = $derived.by(() => {
+    const keys = unicodeKeys === 1 ? '1 key uses' : `${unicodeKeys} keys use`
+    return unicodeMissing.length
+      ? `${keys} &uc, but the English layout no longer types unshifted ${unicodeMissing.join(', ')}. ` +
+          'Those keys type the wrong character until the cells are restored.'
+      : `${keys} &uc. Unshifted 0–9, a–f and u in the English layout are reserved for its ` +
+          'service sequence; editing them asks first. Press &uc keys with English active.'
+  })
   const exports = $derived.by(() => {
     void editor.hostLayoutRevision
     void editor.hostLegend
@@ -145,6 +163,16 @@
     title="What the OS types — install host layouts on Linux or Windows"
   >Host</span>
   <ChromeStatus dirty={dirty} label={statusLabel} title={statusTitle} />
+  {#if unicodeKeys > 0}
+    <span
+      class="unicode-badge"
+      class:broken={unicodeMissing.length > 0}
+      data-unicode-host={unicodeMissing.length ? 'incompatible' : 'reserved'}
+      role="status"
+      aria-label={unicodeTitle}
+      title={unicodeTitle}
+    >&uc {unicodeMissing.length ? '⚠' : '·'} {unicodeKeys}</span>
+  {/if}
 
   <Button
     variant="softReady"
@@ -208,6 +236,23 @@
   .host-pipeline :global(.download) {
     /* Layout extras for softReady OS buttons; colors come from Button. */
     padding: 0 8px 0 6px;
+  }
+
+  .unicode-badge {
+    align-self: center;
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: var(--font-sm);
+    white-space: nowrap;
+    cursor: help;
+  }
+
+  .unicode-badge.broken {
+    color: var(--danger-ink);
+    background: var(--danger-wash);
+    border-color: var(--danger-border);
   }
 
   .os-icon {

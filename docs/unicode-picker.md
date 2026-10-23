@@ -51,6 +51,25 @@ observe or switch the operating system's active layout, and Space/Enter must
 remain available in the installed English layout. National layouts may remain
 installed and shown by the editor, but must not be active when `&uc` runs.
 
+## Host editing while the keymap uses `&uc`
+
+There is no separate "Unicode mode" switch. The state comes from the draft:
+when any layer key, combo, or sensor turn is bound to `&uc`, the 17 service
+cells (unshifted `0`–`9`, `a`–`f`, `u` in the base English column) are
+reserved.
+
+- The Host lane shows an `&uc · N` badge with the key count. It turns red
+  (`&uc ⚠ N`) and its tooltip names the characters when the English layout no
+  longer types one of them, for example after importing a layout or switching
+  the English profile.
+- In an Alt+click session, arming a reserved cell shows a note in the decode
+  card. Picking a different glyph, or Clear, is held back: the card asks to
+  **Keep** the character or **Change anyway**. Restoring the required character,
+  Shift/AltGr levels, other keys, and national columns write at once.
+- Removing the last `&uc` binding lifts the reservation. The `.keymap` and the
+  host files are separate: host edits never change the `.keymap`, and `&uc`
+  never changes the host snapshot or the `.xkb` / `.klc` downloads.
+
 When `&uc` is used, the shared save builder ensures
 `#include <behaviors/unicode.dtsi>` is present on splice, template, and default
 paths. Existing header spelling and other preamble text remain intact. A missing

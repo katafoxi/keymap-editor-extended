@@ -1,5 +1,5 @@
 import aliasesData from '../data/zmk-unicode-aliases.json' with { type: 'json' }
-import type { KeyBindingNode } from './types.js'
+import type { KeyBindingNode, ParsedKeymap } from './types.js'
 import type { HostLayout } from './host-layout.js'
 import { scanDts } from './dts-scan.js'
 import { dominantEol } from './eol.js'
@@ -45,6 +45,25 @@ const UNICODE_SERVICE_BASE = Object.freeze([
   ...[...'ABCDEF'].map(character => [character, character.toLowerCase()] as const),
   ['U', 'u'] as const
 ])
+
+const UNICODE_SERVICE_BY_ZMK: ReadonlyMap<string, string> = new Map(UNICODE_SERVICE_BASE)
+
+/** Unshifted character the `&uc` service sequence needs on this host cell, or null. */
+export function unicodeServiceCharacter(zmk: string, level: number): string | null {
+  return level === 0 ? (UNICODE_SERVICE_BY_ZMK.get(zmk) ?? null) : null
+}
+
+/** Layer keys, combos, and sensor turns bound to `&uc`. */
+export function unicodeBindingCount(
+  keymap: Pick<ParsedKeymap, 'layers' | 'combos' | 'sensorBindings'>
+): number {
+  const bindings = [
+    ...keymap.layers.flat(),
+    ...(keymap.combos ?? []).map(combo => combo.binding),
+    ...(keymap.sensorBindings ?? []).flat()
+  ]
+  return bindings.filter(binding => binding.value === '&uc').length
+}
 
 export interface UnicodeHostLayoutCompatibility {
   compatible: boolean

@@ -83,6 +83,18 @@
     const keysym = hostLevels(editor.activeProfileId(target.language), target.zmk)?.keysyms[0]
     return keysym != null && keysymToGlyph(keysym) == null
   })
+  /** Armed cell is one the keymap's `&uc` keys type as part of their service sequence. */
+  const unicodeRequired = $derived.by(() => {
+    const target = editor.hostSymbolEditTarget
+    if (!hostSession || !target || target.zmk !== zmk) return null
+    return editor.unicodeServiceRequirement(target)
+  })
+  const unicodePending = $derived(
+    hostSession && editor.unicodeServiceConfirm?.zmk === zmk ? editor.unicodeServiceConfirm : null
+  )
+  const unicodeKeysLabel = $derived(
+    editor.unicodeKeyCount === 1 ? '1 &uc key' : `${editor.unicodeKeyCount} &uc keys`
+  )
   /** Host levels exist only for keys in the host-key registry. */
   const hostEditable = $derived(Boolean(displayCard.keycode))
   const hasDiff = $derived(
@@ -104,6 +116,8 @@
     void anchor
     void hostSession
     void showRevertRow
+    void unicodePending
+    void unicodeRequired
     const box = el.getBoundingClientRect()
     let left = anchor.left + anchor.width / 2 - box.width / 2
     left = Math.max(8, Math.min(left, window.innerWidth - box.width - 8))
@@ -161,6 +175,22 @@
       if (!(target instanceof Element)) return
       if (target.closest('[data-host-accept], [data-host-cancel]')) {
         onEndSession?.()
+        return
+      }
+      if (target.closest('[data-unicode-override]')) {
+        if (busy) return
+        void (async () => {
+          busy = true
+          try {
+            await editor.confirmUnicodeServiceEdit()
+          } finally {
+            busy = false
+          }
+        })()
+        return
+      }
+      if (target.closest('[data-unicode-keep]')) {
+        editor.dismissUnicodeServiceEdit()
         return
       }
       const revert = target.closest('[data-host-revert]')
@@ -236,6 +266,25 @@
       {zmk}
       {busy}
     />
+  {/if}
+  {#if unicodePending}
+    <div class="unicode-guard" role="alert" data-unicode-guard="confirm">
+      <p>
+        The keymap has {unicodeKeysLabel}. They type unshifted “{unicodePending.required}” on
+        this key in English to enter a code point. Changing it makes those keys type the wrong
+        character.
+      </p>
+      <div class="unicode-guard-actions">
+        <button type="button" data-unicode-keep>Keep “{unicodePending.required}”</button>
+        <button type="button" class="override" data-unicode-override disabled={busy}>
+          Change anyway
+        </button>
+      </div>
+    </div>
+  {:else if unicodeRequired}
+    <p class="unicode-guard note" role="note" data-unicode-guard="note">
+      Reserved for {unicodeKeysLabel}: keep unshifted “{unicodeRequired}” here. Shift and AltGr are free.
+    </p>
   {/if}
   {#if hostSession}
     <DecodeSessionBar />
@@ -355,6 +404,52 @@
     flex-wrap: wrap;
     column-gap: 0.85em;
     row-gap: 0.25em;
+  }
+
+  .unicode-guard {
+    margin: 6px 0 0;
+    font-family: Quicksand, avenir, sans-serif;
+    font-size: var(--font-sm);
+    line-height: 1.35;
+    white-space: normal;
+    color: var(--warn-ink);
+  }
+
+  .unicode-guard p {
+    margin: 0;
+  }
+
+  .unicode-guard:not(.note) {
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--warn-wash);
+    box-shadow: inset 0 0 0 1px var(--warn-border);
+  }
+
+  .unicode-guard-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .unicode-guard-actions button {
+    padding: 2px 8px;
+    border: 1px solid var(--warn-border);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .unicode-guard-actions button.override {
+    color: var(--danger-ink);
+    border-color: var(--danger-border);
+  }
+
+  .legend-decode.has-table .unicode-guard {
+    width: 0;
+    min-width: 100%;
   }
 
   .mode-hint {

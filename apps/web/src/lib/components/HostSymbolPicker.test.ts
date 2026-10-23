@@ -235,6 +235,37 @@ describe('LegendDecodeCard host symbol catalog', () => {
     expect(editor.hostSymbolEditTarget).toEqual({ language: 'en', zmk: 'A', level: 0 })
   })
 
+  it('asks before breaking a cell the keymap’s &uc keys need', async () => {
+    openKey('A')
+    await editor.selectLanguageProfile('en', primarySystemLayoutId('en')!)
+    editor.draftKeymap = {
+      layer_names: ['default'],
+      layers: [[{ value: '&uc', params: [{ value: 'UC_DE_AE', params: [] }] }]]
+    }
+    flushSync()
+    openDecodeCell('Edit English tap')
+    const card = () => document.querySelector('.legend-decode')
+    expect(card()?.querySelector('[data-unicode-guard="note"]')?.textContent).toMatch(
+      /Reserved for 1 &uc key: keep unshifted “a”/
+    )
+
+    await editor.pickHostSymbol('α')
+    flushSync()
+    expect(card()?.querySelector('[data-unicode-guard="confirm"]')?.textContent).toMatch(/type unshifted “a”/)
+    expect(hostLayout(editor.activeProfileId('en'))?.byZmk.get('A')?.glyphs[0]).toBe('a')
+
+    ;(card()?.querySelector('[data-unicode-keep]') as HTMLElement).click()
+    flushSync()
+    expect(card()?.querySelector('[data-unicode-guard="confirm"]')).toBeNull()
+
+    await editor.pickHostSymbol('α')
+    flushSync()
+    ;(card()?.querySelector('[data-unicode-override]') as HTMLElement).click()
+    await vi.waitFor(() => {
+      expect(hostLayout(editor.activeProfileId('en'))?.byZmk.get('A')?.glyphs[0]).toBe('α')
+    })
+  })
+
   it('arms AltGr by default when the host-edit session opens', async () => {
     openKey('A')
     await editor.selectLanguageProfile('en', primarySystemLayoutId('en')!)

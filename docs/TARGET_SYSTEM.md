@@ -69,7 +69,10 @@ while a compatible English layout is active: its service sequence needs unshifte
 `0`–`9`, `a`–`f`, `u`, Space, and Enter. National layouts may remain available,
 and Shift/AltGr number-row symbols may differ, but the browser cannot switch or
 detect the OS's active layout. Save adds the module header but never changes
-`west.yml` or OS settings.
+`west.yml` or OS settings. While the draft uses `&uc`, the Host lane shows an
+`&uc · N` badge (red when the English layout lost a service character), and an
+Alt+click edit of one of the 17 unshifted service cells asks before writing
+([details](unicode-picker.md#host-editing-while-the-keymap-uses-uc)).
 
 ## Conditional layers
 

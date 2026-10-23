@@ -6,6 +6,8 @@ import {
   unicodeAliasBinding,
   unicodeModeBinding,
   unicodeHostLayoutCompatibility,
+  unicodeServiceCharacter,
+  unicodeBindingCount,
   UNICODE_ALIASES,
   UNICODE_MODES,
   ensureUnicodeInclude
@@ -67,6 +69,28 @@ describe('ZMK Unicode input', () => {
     expect(unicodeHostLayoutCompatibility(us)).toEqual({ compatible: true, missing: [] })
     expect(unicodeHostLayoutCompatibility(altGr)).toEqual({ compatible: true, missing: [] })
     expect(unicodeHostLayoutCompatibility(remapped)).toEqual({ compatible: false, missing: ['1'] })
+  })
+
+  it('names the unshifted service character for each of the 17 host cells', () => {
+    expect(unicodeServiceCharacter('N1', 0)).toBe('1')
+    expect(unicodeServiceCharacter('N0', 0)).toBe('0')
+    expect(unicodeServiceCharacter('F', 0)).toBe('f')
+    expect(unicodeServiceCharacter('U', 0)).toBe('u')
+    expect(unicodeServiceCharacter('N1', 1)).toBeNull()
+    expect(unicodeServiceCharacter('N1', 2)).toBeNull()
+    expect(unicodeServiceCharacter('G', 0)).toBeNull()
+    const cells = [...'1234567890'].map(d => `N${d}`).concat([...'ABCDEFU'])
+    expect(cells.filter(zmk => unicodeServiceCharacter(zmk, 0) != null)).toHaveLength(17)
+  })
+
+  it('counts &uc on layers, combos, and sensor turns', () => {
+    const keymap = parseKeymap({
+      layers: [['&uc UC_DE_AE', '&kp A'], ['&uc 0xE4 0', '&uc UC_SET_LINUX']],
+      combos: [{ id: 'c', binding: '&uc UC_DE_OE', keyPositions: [0, 1] }],
+      sensorBindings: [['&uc UC_DE_UE'], []]
+    })
+    expect(unicodeBindingCount(keymap)).toBe(5)
+    expect(unicodeBindingCount(parseKeymap({ layers: [['&kp A']] }))).toBe(0)
   })
 
   it('keeps unrecognized external aliases opaque', () => {

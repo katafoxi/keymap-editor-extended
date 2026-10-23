@@ -41,7 +41,8 @@ import type {
   HostProfilePrompt,
   HostSymbolEditTarget,
   KeyboardSelectionSource,
-  SaveNotice
+  SaveNotice,
+  UnicodeServiceConfirm
 } from './types'
 
 export interface EditorState
@@ -66,7 +67,8 @@ export type {
   KeyboardSelectionSource,
   KeymapPickerPayload,
   LocalKeyboardSelection,
-  SaveNotice
+  SaveNotice,
+  UnicodeServiceConfirm
 } from './types'
 export { hostLegendAnchorIndex } from './helpers'
 
@@ -165,6 +167,7 @@ export class EditorState {
    * setHostKeyLevel; this only locks the decode card until Accept/Cancel.
    */
   hostEditSession = $state<{ keyIndex: number; layer: number } | null>(null)
+  unicodeServiceConfirm = $state<UnicodeServiceConfirm | null>(null)
   saveNotice = $state<SaveNotice | null>(null)
 
   /** Bumps on select / new publish so stale reloads are ignored. */

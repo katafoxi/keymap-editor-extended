@@ -28,9 +28,16 @@ export type HostKeyLevelEditResult =
     }
   | {
       ok: false
-      reason: 'rejected' | 'unknown-key' | 'missing-layout' | 'no-target'
+      reason: 'rejected' | 'unknown-key' | 'missing-layout' | 'no-target' | 'unicode-service-key'
       detail?: KeysymRejection
     }
+
+/** Host edit held back because the keymap's `&uc` keys need this cell unchanged. */
+export type UnicodeServiceConfirm = HostSymbolEditTarget & {
+  text: string
+  /** Unshifted character the `&uc` service sequence types on this key. */
+  required: string
+}
 
 export type SaveNotice = {
   kind: 'warning' | 'error'

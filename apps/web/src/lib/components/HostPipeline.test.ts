@@ -1,6 +1,6 @@
 import { flushSync, mount, unmount } from 'svelte'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { addHostLanguage, primarySystemLayoutId } from '@keymap-editor/keymap-core'
+import { addHostLanguage, parseKeyBinding, primarySystemLayoutId } from '@keymap-editor/keymap-core'
 import { editor } from '../editor.svelte.js'
 import { clearHostLayoutStore } from '../host-layout-store'
 import HostPipeline from './HostPipeline.svelte'
@@ -83,6 +83,26 @@ describe('HostPipeline', () => {
       'Open Windows install guide'
     ])
     expect(editor.activeProfileId('en')).not.toBe(primarySystemLayoutId('en')!)
+  })
+
+  it('shows an &uc badge that turns broken when an English service cell is remapped', async () => {
+    mountPipeline()
+    expect(target.querySelector('.unicode-badge')).toBeNull()
+
+    editor.draftKeymap = {
+      layer_names: ['default'],
+      layers: [[parseKeyBinding('&uc UC_DE_AE'), parseKeyBinding('&uc 0xE4 0')]]
+    }
+    flushSync()
+    const badge = () => target.querySelector<HTMLElement>('.unicode-badge')
+    expect(badge()?.dataset.unicodeHost).toBe('reserved')
+    expect(badge()?.textContent).toContain('2')
+    expect(badge()?.title).toMatch(/reserved/)
+
+    await editor.setHostKeyLevel('en', 'N1', 0, '!')
+    flushSync()
+    expect(badge()?.dataset.unicodeHost).toBe('incompatible')
+    expect(badge()?.title).toMatch(/no longer types unshifted 1/)
   })
 
   it('opens a Linux install dialog with copy/download actions', async () => {

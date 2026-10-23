@@ -13,7 +13,8 @@ export const GETTER_NAMES = [
   'hostDeliverableFingerprint',
   'canAlignHostSymbols',
   'symbolAlignShowsWinAltGr',
-  'multilangViewOn'
+  'multilangViewOn',
+  'unicodeKeyCount'
 ] as const
 
 export type GetterName = (typeof GETTER_NAMES)[number]
