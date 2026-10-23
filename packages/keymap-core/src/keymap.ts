@@ -1,4 +1,5 @@
 import behaviorsData from '../data/zmk-behaviors.json' with { type: 'json' }
+import { ensureUnicodeInclude } from './unicode.js'
 import { spliceCombosIntoDts, type DtsComboJson } from './dts-combos.js'
 import {
   encodeConditionalLayerFingerprint,
@@ -569,7 +570,7 @@ function applyModelBlocks(
   keymap: ParsedKeymap,
   original?: ParsedKeymap
 ): string {
-  return applyRgbLayerRecipe(
+  const result = applyRgbLayerRecipe(
     applyHoldTaps(
       applyConditionalLayers(
         applyCombos(applySensorBindings(code, keymap), keymap, original),
@@ -581,6 +582,7 @@ function applyModelBlocks(
     ),
     keymap
   )
+  return getBehavioursUsed(keymap).includes('&uc') ? ensureUnicodeInclude(result) : result
 }
 
 function applyRgbLayerRecipe(code: string, keymap: ParsedKeymap): string {

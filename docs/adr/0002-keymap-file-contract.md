@@ -27,6 +27,7 @@ Without a fixed contract, Save can silently overwrite a hand-maintained `.keymap
 - When `conditionalLayers` is present, every save path rewrites the root `conditional_layers` node from that list. An empty list removes the node. When the field is absent, an existing node is left unchanged.
 - When `holdTaps` is present, every save path rewrites hold-tap timing from that list and inserts missing nodes. When the field is absent, existing hold-tap nodes are left unchanged.
 - When `sensorBindings` is present, every save path rewrites each layer's `sensor-bindings` from that list. An empty inner list removes the property on that layer. When the field is absent, existing sensor lines are left unchanged.
+- When `&uc` is used, every save path ensures `#include <behaviors/unicode.dtsi>` exists. Splice adds only a missing header before the first DTS node, retaining preceding preprocessor setup and existing header spelling. The module manifest and host setup remain user-managed; see [Unicode picker](../unicode-picker.md).
 
 Local, GitHub, and Clipboard adapters all call the same `buildKeymapCode` helper.
 

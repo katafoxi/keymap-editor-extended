@@ -115,6 +115,37 @@ describe('KeyEditor value catalog', () => {
     return view as ReturnType<typeof mount> & { show: (next: EditorScene) => void }
   }
 
+  it('uses the Unicode picker and blocks Apply while its input is invalid', () => {
+    const changes: unknown[] = []
+    open({
+      bindingLabel: '&uc 0xE4 0xC4',
+      behaviours,
+      editorSlots: [
+        slot(0, 'behaviour', '&uc', 'Behaviour'),
+        slot(1, 'raw', '0xE4', 'Normal'),
+        slot(2, 'raw', '0xC4', 'Shift')
+      ],
+      activeCodeIndex: 1,
+      choices: [],
+      onSelectBehaviour: choice => changes.push(choice),
+      onSelectValue: () => {},
+      onActivateSlot: () => {},
+      onConfirm: () => {},
+      onCancel: () => {}
+    })
+    const field = target.querySelector<HTMLInputElement>('input[aria-label="Normal Unicode character or code point"]')
+    expect(field).not.toBeNull()
+    field!.value = 'U+D800'
+    field!.dispatchEvent(new Event('input', { bubbles: true }))
+    flushSync()
+    expect(target.querySelector<HTMLButtonElement>('.key-editor-ok')?.disabled).toBe(true)
+    field!.value = '€'
+    field!.dispatchEvent(new Event('input', { bubbles: true }))
+    flushSync()
+    expect(target.querySelector<HTMLButtonElement>('.key-editor-ok')?.disabled).toBe(false)
+    expect(changes.at(-1)).toMatchObject({ code: '&uc', unicodeBinding: { value: '&uc' } })
+  })
+
   it('shows the binding as a result sticker above the panel and explains chip styles', () => {
     open({
       bindingLabel: '&kp A',

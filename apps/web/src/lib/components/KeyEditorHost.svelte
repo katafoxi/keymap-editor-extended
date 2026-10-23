@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { CatalogChoice, HsbColor } from '@keymap-editor/keymap-core'
+  import { hostLayout, type CatalogChoice, type HsbColor } from '@keymap-editor/keymap-core'
   import { editor } from '../editor.svelte.js'
   import type { EditorSlot } from '../key-editor'
   import Modal from './Common/Modal.svelte'
@@ -51,6 +51,7 @@
   }: Props = $props()
 
   const encoderEdit = $derived(variant === 'encoder')
+  const unicodeHostLayout = $derived(hostLayout(editor.hostLegend.columns[0]?.layoutId ?? ''))
 
   function applyStaged(staged?: KeyEditorConfirmStaged | null) {
     if (staged?.holdTaps?.length) editor.armHoldTapsForNextUpdate(staged.holdTaps)
@@ -70,6 +71,7 @@
       {usedKeycodes}
       {usedRevision}
       {usedLayerLabels}
+      {unicodeHostLayout}
       {variant}
       {onSelectBehaviour}
       {onSelectValue}
